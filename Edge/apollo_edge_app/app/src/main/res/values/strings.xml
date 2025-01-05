@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Edge</string>
+
+    <string name="import_file">Click to import a file</string>
+
+    <string name="face_app_name">face recognizer</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="enter_name">Enter name</string>
+    <string name="select_name">Select name</string>
+    <string name="ok">OK</string>
+
+    <string name="add_person">add person</string>
+    <string name="update_person">update person</string>
+    <string name="train_model">TRAIN MODEL</string>
+    <string name="add_individual">REGISTER INDIVIDUAL</string>
+    <string name="save_result">SAVE IMAGE</string>
+    <string name="view_results">VIEW RESULTS</string>
+    <string name="sync_results">SYNC IMAGES</string>
+
+    <string name="kaldi_app_name">Kaldi Demo</string>
+    <string name="recognize_file">Speech-to-text from File</string>
+    <string name="recognize_microphone">Speech-to-text from Microphone</string>
+    <string name="stop_microphone">Stop Microphone</string>
+    <string name="preparing">Preparing the recognizer\n</string>
+    <string name="ready">Ready\n</string>
+    <string name="failed">Failed to init recognizer %s\n</string>
+    <string name="elapsed">Result %s elapsed %d milliseconds\n</string>
+    <string name="starting">Starting\n</string>
+
+    <string name="OCR_app_name">OCR</string>
+    <string name="open_camera">OPEN CAMERA</string>
+    <string name="import_image">import image</string>
+    <string name="speaker_app_name">Speaker Recognizer</string>
+    <string name="set_language_arabic">Set language: Arabic</string>
+    <string name="set_language_english">Set language: English</string>
+    <string name="set_language_french">Set language: French</string>
+    <string name="set_language_russian">SET LANGUAGE: RUSSIAN</string>
+
+    <string name="face">facial recognition</string>
+    <string name="ocr">OCR</string>
+    <string name="speech">speech-to-text</string>
+    <string name="speaker">speaker recognizer</string>
+</resources>

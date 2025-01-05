@@ -1,0 +1,13 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/file-type
+
+extra_shm: true
+
+resources: 
+  requests:
+    cpu: 100m
+    memory: 1024Mi
+  limits:
+    cpu: 200m
+    memory: 3096Mi
+    

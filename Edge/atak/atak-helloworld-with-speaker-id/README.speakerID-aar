@@ -1,0 +1,5 @@
+Run the following to build the speakerID backend AAR, which is symbolic-linked by this project.
+
+```
+./build_and_symlink_latest_speakerid_aar.bash
+```

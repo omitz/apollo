@@ -1,0 +1,12 @@
+apt-get install portaudio19-dev  python3-pyaudio
+apt install python3-dev
+
+pip install numpy
+pip install pandas
+pip install scipy
+pip install keras
+pip install tensorflow
+pip install pyaudio
+pip install librosa
+
+pip install keras_application

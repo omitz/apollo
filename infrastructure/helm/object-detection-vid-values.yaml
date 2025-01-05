@@ -1,0 +1,9 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/object-detection-vid
+
+extra_shm: true
+
+resources: 
+  requests:
+    cpu: 100m
+    memory: 512Mi

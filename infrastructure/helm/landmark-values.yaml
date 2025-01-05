@@ -1,0 +1,13 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/landmark
+
+extra_shm: true
+
+
+resources: 
+  requests:
+    cpu: 200m
+    memory: 1024Mi
+#  limits:
+#    cpu: 2000m
+#    memory: 2048Mi

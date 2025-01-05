@@ -1,0 +1,63 @@
+## Additional container environment variables
+## Example: Configure SSL for database
+## extraEnv:
+##   - name: WORDPRESS_DATABASE_SSL_CA_FILE
+##     value: /path/to/ca_cert
+##
+image:
+  repository: mitlibraries/cantaloupe
+
+resources: 
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+extraEnv: |
+  - name: ENDPOINT_ADMIN_ENABLED
+    value: "true"
+  - name: ENDPOINT_ADMIN_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: cantaloupe-connection-secret
+        key: username
+  - name: ENDPOINT_ADMIN_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: cantaloupe-connection-secret
+        key: password
+  - name: S3SOURCE_BASICLOOKUPSTRATEGY_BUCKET_NAME
+    valueFrom:
+      secretKeyRef:
+        name: cantaloupe-connection-secret
+        key: s3bucket
+  - name: SOURCE_STATIC
+    value: S3Source
+  - name: S3SOURCE_ENDPOINT
+    valueFrom: 
+      secretKeyRef:
+        name: cantaloupe-connection-secret
+        key: s3endpoint
+  - name: PROCESSOR_FALLBACK
+    value: ImageMagickProcessor
+  - name: S3SOURCE_ACCESS_KEY_ID
+    value: ""
+  - name: S3SOURCE_SECRET_KEY
+    value: ""
+  - name: S3SOURCE_BASICLOOKUPSTRATEGY_PATH_PREFIX
+    value: ""
+  - name: S3SOURCE_BASICLOOKUPSTRATEGY_PATH_SUFFIX
+    value: ""
+service:
+  type: NodePort
+  port: 8182
+
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+  externalDnsHostname: images.apollo-cttso.com
+  path: /*
+  tls: true

@@ -1,0 +1,59 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.Holo">
+        <item name="android:buttonStyle">@android:style/Widget.Button</item>
+        <item name="android:imageButtonStyle">@android:style/Widget.Button</item>
+        <item name="android:buttonStyleToggle">@android:style/Widget.Button</item>
+        <item name="android:spinnerStyle">@style/ATAKSpinner</item>
+        <item name="android:spinnerItemStyle">@style/ATAKSpinnerItem</item>
+        <item name="android:editTextStyle">@style/ATAKEditText</item>
+        <item name="android:autoCompleteTextViewStyle">@style/ATAKEditText</item>
+    </style>
+
+
+    <style name="ATAKSpinner" parent="@android:style/Widget.Spinner">
+        <item name="android:spinnerMode">dialog</item>
+    </style>
+
+    <style name="ATAKEditText" parent="@android:style/Widget.EditText">
+        <!-- Default to non-multi-line edit texts? Probably should do this field-by-field, but we've missed a LOT of them!  -->
+        <!-- <item name="inputType">text</item> -->
+
+        <!-- Make all text fields use the non-fullscreen keyboard. -->
+        <item name="android:imeOptions">flagNoFullscreen</item>
+    </style>
+
+    <style name="ATAKAutoCompleteText" parent="@android:style/Widget.AutoCompleteTextView">
+        <item name="android:imeOptions">flagNoFullscreen</item>
+        <item name="android:windowSoftInputMode">adjustPan|adjustResize</item>
+    </style>
+
+    <style name="singleLineAlphaNum" parent="ATAKEditText">
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:digits">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 _-,.+():@</item>
+    </style>
+
+    <!-- In the new theme, sometimes the spinner text color is turning white. -->
+    <style name="ATAKSpinnerItem" parent="@style/AppTheme">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+</resources>

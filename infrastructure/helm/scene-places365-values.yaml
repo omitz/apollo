@@ -1,0 +1,6 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/scene-places365
+resources: 
+  requests:
+    cpu: 100m
+    memory: 512Mi

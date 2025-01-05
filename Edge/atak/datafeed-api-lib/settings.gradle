@@ -1,0 +1,5 @@
+rootProject.name = "datafeed-api-lib"
+include ':data-feed-library'
+include ':aars:mission-api-library'
+include ':main-lib'
+

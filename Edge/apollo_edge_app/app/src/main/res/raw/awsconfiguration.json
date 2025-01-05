@@ -1,0 +1,20 @@
+{
+  "Version": "1.0",
+  "IdentityManager": {
+    "Default": {}
+  },
+"CredentialsProvider": {
+  "CognitoIdentity": {
+    "Default": {
+      "PoolId": "us-east-1:b944c684-b6b9-4061-937c-46e8455293ff",
+      "Region": "us-east-1"
+    }
+  }
+},
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "apollo-source-data",
+      "Region": "us-east-1"
+    }
+  }
+}

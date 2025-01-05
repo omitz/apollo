@@ -1,0 +1,108 @@
+plugins {
+    id 'com.android.library'
+}
+
+def ApolloEdgeLibVersion = '0.9.0'
+
+apply plugin: 'com.kezong.fat-aar'
+
+repositories {
+    google()
+    jcenter ()
+    mavenCentral()
+
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 2
+        versionName ApolloEdgeLibVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        // Here's the version info:
+        // see  https://developer.android.com/studio/publish/versioning
+        archivesBaseName = "apollo-datafeed-library"
+        versionName = android.defaultConfig.versionName
+        setProperty("archivesBaseName", "${archivesBaseName}-$versionName")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    if (new File("$project.projectDir/../../../../ATAK/app/build/libs/main.jar").exists()) {
+        println("using the autobuilder version of main.jar as a subproject");
+        compileOnly fileTree(dir: '../../../../ATAK/app/build/libs', include: '*.jar')
+    } else if (new File("$project.projectDir/../../../ATAK/app/build/libs/main.jar").exists()) {
+        println("using the autobuilder version of main.jar");
+        compileOnly fileTree(dir: '../../../ATAK/app/build/libs', include: '*.jar')
+    } else if (new File("$project.projectDir/../../../../main.jar").exists()) {
+        println("using the sdk version of main.jar");
+        compileOnly fileTree(dir: '../../../..', include: '*.jar')
+    } else if (new File("sdk/main.jar").exists()) {
+        println("using the local version of main.jar");
+        compileOnly fileTree(dir: '../sdk/main.jar', include: '*.jar')
+        compileOnly fileTree(dir: '../../sdk/main.jar', include: '*.jar')
+    } else if (project.rootProject.file("local.properties").exists()) {
+        def props = new Properties()
+        props.load(project.rootProject.file("local.properties").newDataInputStream())
+        def sdkdir = props.getProperty("sdk.path").toString()
+        if (sdkdir == null) {
+            println("error reading sdk.path from the local.properties file, this should point to the main.jar file");
+        }
+        if (new File(sdkdir).exists()) {
+            println("using the local version of ${sdkdir}");
+            compileOnly fileTree(dir: "${sdkdir}", include: '*.jar')
+        }
+    } else {
+        println("WARNING: could not find the sdk")
+    }
+    implementation ('androidx.swiperefreshlayout:swiperefreshlayout:1.0.0') {
+        exclude module: 'collection'
+        exclude module: 'core'
+        exclude module: 'lifecycle'
+        exclude module: 'core-common'
+        exclude module: 'collection'
+        exclude module: 'customview'
+    }
+
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0' //needed for permssion in unit test
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    // Use below for project module
+    // implementation project (':aars:mission-api-library')
+    // implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
+    //     exclude group: 'junit', module: 'junit'
+    // }
+    // implementation 'com.google.code.gson:gson:2.8.5' // 2.8.6 causes illegal class
+
+    // Use below for fat-arr
+    embed project (':aars:mission-api-library')
+    embed ('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    embed 'com.google.code.gson:gson:2.8.5' // 2.8.6 causes illegal class
+}
+
+

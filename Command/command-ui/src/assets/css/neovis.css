@@ -1,0 +1,14 @@
+.open {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.graph {
+    height: 500px;
+}
+
+.closed {
+    height: 0;
+    display: none
+}

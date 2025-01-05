@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dark_gray_apollo">
+
+    <TextView
+        android:id="@+id/header_upload"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:padding = "8dp"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:text = "Upload"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/customborder"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+        android:id="@+id/importButton"
+        style="@style/apolloDarkButton"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/import_file"
+        android:drawableTop="@drawable/upload"
+        android:textSize="20sp" />
+
+    </LinearLayout>
+</LinearLayout>

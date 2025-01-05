@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_gray_apollo"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
+
+        <ImageButton
+            android:id="@+id/atakImage_btn"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="5"
+            android:background="@null"
+            android:src="@drawable/atak_logo" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/pervitinadexffp"
+            android:foregroundGravity="center"
+            android:gravity="left"
+            android:paddingLeft="50dp"
+            android:paddingTop="15dp"
+            android:text="@string/app_desc"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="left"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/username_input_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/username_input_label"
+            android:textColor="@color/field_label"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/username_input"
+            style="@style/darkTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/apollo_text_input"
+            android:hint="Username"
+            android:textColor="@color/hint_text"
+            android:textColorHint="@color/hint_text" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/password_input_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/password_input_label"
+            android:textColor="@color/field_label"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/password_input"
+            style="@style/darkTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/apollo_text_input"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textColor="@color/hint_text"
+            android:textColorHint="@color/hint_text" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/ic_checkbox"
+            android:paddingLeft="17dp"
+            android:text="@string/remember_login"
+            android:textColor="@color/hint_text"
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <TextView
+            android:id="@+id/login_error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/pervitinadexffp"
+            android:gravity="center"
+            android:text="@string/failed_login_text"
+            android:textColor="@color/warning_red"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/login_btn"
+            style="@style/apolloDarkButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/apollo_login_button"
+            android:drawablePadding="30dp"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/login" />
+
+    </LinearLayout>
+
+</LinearLayout>

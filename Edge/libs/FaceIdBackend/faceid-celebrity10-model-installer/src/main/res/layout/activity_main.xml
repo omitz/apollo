@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:orientation="vertical"
+       android:weightSum="100" >
+
+  <Space
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="33"/>
+  
+  <Button
+      android:id="@+id/install_btn"
+      android:layout_width="fill_parent"
+      android:text="Click to install model data package"
+      android:layout_height="wrap_content"
+      android:layout_weight="33" />
+
+  <!-- <Button -->
+  <!--     android:id="@+id/quit_btn" -->
+  <!--     android:layout_width="fill_parent" -->
+  <!--     android:text="Quit" -->
+  <!--     android:layout_height="wrap_content" -->
+  <!--     android:layout_weight="25" /> -->
+  
+      <!-- <Button -->
+      <!--     android:layout_width="fill_parent" -->
+      <!--     android:text="yourText" -->
+      <!--     android:layout_height="wrap_content" -->
+      <!--     android:layout_weight="50" /> -->
+</LinearLayout>

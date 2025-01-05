@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Apollo Edge</string>
+    <string name="app_desc">Apollo Edge</string>
+
+
+    <string name="speech2text"> Speech-to-text</string>
+
+    <!-- login -->
+    <string name="login_error_text">Login to access Apollo Command</string>\
+    <string name="failed_login_text">Invalid username or password</string>
+    <string name="username_input_label">Username</string>
+    <string name="password_input_label">Password</string>
+    <string name="remember_login">Remember me</string>
+    <string name="login">LOGIN</string>
+
+    <!-- Face Recognition -->
+    <string name="face_app_name">face recognizer</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="enter_name">Enter name</string>
+    <string name="select_name">Select name</string>
+    <string name="ok">OK</string>
+
+
+    <string name="add_person">add person</string>
+    <string name="update_person">update person</string>
+    <string name="train_model">TRAIN MODEL</string>
+    <string name="add_individual">REGISTER INDIVIDUAL</string>
+    <string name="save_result">Save Image</string>
+    <string name="view_results">View Results</string>
+    <string name="sync_results">Sync Results</string>
+    <string name="edge">EDGE</string>
+    <string name="command">COMMAND</string>
+
+    <!-- Kaldi -->
+    <string name="kaldi_app_name">Kaldi Demo</string>
+    <string name="recognize_file">Speech-to-text from File</string>
+    <string name="recognize_microphone">Speech-to-text from Microphone</string>
+    <string name="stop_microphone">Stop Microphone</string>
+    <string name="preparing">Preparing the recognizer. Please wait..\n</string>
+    <string name="ready">Ready\n</string>
+    <string name="listening">Say something...\n</string>
+    <string name="failed">Failed to init recognizer %s\n</string>
+    <string name="elapsed">Result %s elapsed %d milliseconds\n</string>
+    <string name="starting">Starting\n</string>
+
+    <!-- OCR -->
+    <string name="OCR_app_name">OCR</string>
+    <string name="open_camera">Camera</string>
+    <string name="import_image">Import Image</string>
+    <string name="set_language_arabic">Arabic</string>
+    <string name="set_language_english">English</string>
+    <string name="set_language_french">French</string>
+    <string name="set_language_russian">RUSSIAN</string>
+
+    <!-- Upload -->
+    <string name="import_file">Browse file to upload</string>
+
+    <!-- TermuxAPI -->
+    <string name="share_file_chooser_title">Share with</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="permission_description">Termux:API needs the following permission(s):\n</string>
+    <string name="login_button_string">LOGIN</string>
+    <string name="sign_out_button_string">SIGN OUT</string>
+
+</resources>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2020 PAR Government Systems
+  ~
+  ~ Unlimited Rights:
+  ~ PAR Government retains ownership rights to this software.  The Government has Unlimited Rights
+  ~ to use, modify, reproduce, release, perform, display, or disclose this
+  ~ software as identified in the purchase order contract. Any
+  ~ reproduction of computer software or portions thereof marked with this
+  ~ legend must also reproduce the markings. Any person who has been provided
+  ~ access to this software must be aware of the above restrictions.
+  -->
+
+<resources>
+
+    <string name="app_name">Mission API Library</string>
+    <string name="app_desc">Library interface for the Mission API used by Data Sync.</string>
+
+    <!-- Contents -->
+    <string name="create_mission">Create Feed</string>
+    <string name="delete_mission">Delete Feed</string>
+    <string name="add_content">Add Content</string>
+    <string name="remove_content">Remove Content</string>
+    <string name="new_content">New</string>
+    <string name="available">Available</string>
+    <string name="missing">Missing</string>
+    <string name="desynced">Out of Sync</string>
+    <string name="offline">Offline</string>
+    <string name="content_untitled">[Untitled]</string>
+    <string name="user_removed_content">removed</string>
+    <string name="user_deleted_mission">deleted</string>
+    <string name="user_updated_content">updated</string>
+    <string name="user_added_content">added</string>
+    <string name="user_created_mission">created</string>
+    <string name="invalid_change">Invalid change</string>
+
+    <!-- Roles -->
+    <string name="role_read_only">Read-only</string>
+    <string name="role_read_only_desc">%s may only view the feed.</string>
+    <string name="role_subscriber">Subscriber</string>
+    <string name="role_subscriber_desc">%s may modify content in the feed.</string>
+    <string name="role_lead">Lead</string>
+    <string name="role_lead_desc">%s may modify other users\' permissions (excluding other leads).</string>
+    <string name="role_owner">Owner</string>
+    <string name="role_owner_desc">%s may perform any actions including deletion of the feed.</string>
+
+    <!-- File import -->
+    <string name="failed_to_import_file">Failed to import file</string>
+    <string name="import_cancelled">Import Cancelled</string>
+    <string name="file_not_exist">%s: file does not exist.</string>
+    <string name="file_no_metadata">%s: no metadata available.</string>
+    <string name="file_not_supported">%s: import not supported for this file type.</string>
+
+    <!-- Misc -->
+    <string name="custom_files">%s Files</string>
+    <string name="mission_group_default_label">Public</string>
+    <string name="anonymous_user">Anonymous user</string>
+
+    <!-- REST operations -->
+    <string name="rest_op_initiated">Initiated</string>
+    <string name="rest_op_not_connected">Server not connected</string>
+    <string name="rest_op_running">Operation already running</string>
+    <string name="rest_op_invalid">Invalid data</string>
+
+    <!-- REST notifications -->
+
+    <!-- DELETE -->
+    <string name="mn_failed_to_remove_logs">Failed to remove logs from %s</string>
+    <string name="mn_failed_to_remove_items">Failed to remove items from %s</string>
+    <string name="mn_failed_to_remove_files">Failed to remove files from %s</string>
+    <string name="mn_failed_to_remove_external">Failed to remove %1$s from %2$s</string>
+    <string name="mn_failed_to_delete_feed">Failed to delete feed %s</string>
+    <string name="mn_failed_to_dismiss_invitation">Failed to dismiss invitation to %s</string>
+
+    <!-- GET -->
+    <string name="mn_failed_to_get_feed">Failed to download feed %s</string>
+    <string name="mn_failed_to_get_feeds">Failed to get feeds on %s</string>
+    <string name="mn_failed_to_get_changes">Failed to get updates for %s</string>
+    <string name="mn_failed_to_get_items">Failed to download items from %s</string>
+    <string name="mn_failed_to_get_files">Failed to download %1$s from %1$s</string>
+    <string name="mn_failed_to_get_logs">Failed to download logs from %s</string>
+    <string name="mn_failed_to_get_attachments">Failed to download attachments from %s</string>
+    <string name="mn_failed_to_get_role">Failed to get current role for %s</string>
+    <string name="mn_failed_to_get_invites">Failed to get invitations from %s</string>
+    <string name="mn_failed_to_get_users">Failed to get users for %s</string>
+
+    <!-- PUT -->
+    <string name="mn_failed_to_create_feed">Failed to create feed: %s</string>
+    <string name="mn_failed_to_subscribe">Failed to subscribe to %s</string>
+    <string name="mn_failed_to_publish_content">Failed to publish content to %s</string>
+    <string name="mn_publish_hashtags_complete">Publish hashtags complete: %s</string>
+    <string name="mn_publish_hashtags_complete_msg">Published hashtags to %1$s on %2$s</string>
+    <string name="mn_failed_to_publish_hashtags">Failed to publish hashtags for %s</string>
+    <string name="mn_publishing_item_failed">Failed to publish %1$s to %2$s</string>
+    <string name="mn_failed_to_publish_items">Failed to publish items to %s</string>
+    <string name="mn_failed_to_publish_file_metadata">Failed to publish file metadata for %s</string>
+    <string name="mn_failed_to_publish_logs">Failed to publish logs to %s</string>
+    <string name="mn_failed_to_publish_data_package">Failed to publish Data Package to %s</string>
+    <string name="mn_failed_to_publish_external_data">Failed to publish external content to %s</string>
+    <string name="mn_failed_to_invite_users">Failed to invite users to %s</string>
+    <string name="mn_failed_to_change_role">Failed to change user role in %s</string>
+    <string name="mn_failed_to_set_feed_password">Failed to set password for %s</string>
+
+    <!-- Errors -->
+    <string name="mn_sync_error">Sync Error</string>
+    <string name="mn_error_find_mission">Failed to find feed: %s</string>
+    <string name="mn_server_error_forbidden">You don\'t have permission to do this (error %d)</string>
+    <string name="mn_server_error_timeout">Could not connect to server (error %d)</string>
+    <string name="mn_server_error_internal">Internal server error (error 500)</string>
+    <string name="mn_server_error_404">Content is missing on the server (error 404)</string>
+
+</resources>

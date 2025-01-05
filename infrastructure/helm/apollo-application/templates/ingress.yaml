@@ -1,0 +1,46 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "apollo-application.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "apollo-application.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- if .Values.ingress.httpsCertificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.httpsCertificateArn }}
+    {{- end }}
+    {{- if .Values.ingress.externalDnsHostname }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.externalDnsHostname }}
+    {{- end }}
+spec:
+  rules:
+    {{- if .Values.ingress.hostName }}
+    - host: {{ .Values.ingress.hostName }}
+      http:
+    {{- else }}
+    - http:
+    {{- end }}
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+            {{- if .Values.ingress.tls }}
+              serviceName: ssl-redirect
+              servicePort: use-annotation
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+            {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+            {{- end }}
+{{- end }}

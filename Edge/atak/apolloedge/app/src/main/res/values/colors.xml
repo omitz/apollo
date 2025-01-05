@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- COMMON -->
+    <color name="white">#ffffff</color>
+    <color name="off_white">#F3F3F4</color>
+
+    <color name="medium_gray">#BDBDBF</color>
+
+    <color name="black">#000000</color>
+    <color name="darker_gray">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="light_blue">#33b5e5</color>
+    <color name="light_gray">#cccccc</color>
+
+    <color name="dark_gray_apollo">#303030</color>
+    <color name="apollo_red"> #ff0000</color>
+    <color name="apollo_blue1">#4285A9</color>
+
+    <color name="login_button_enabled">#4285A9</color>
+    <color name="login_button_disabled">#303030</color>
+    <color name="logout_button_enabled">#6A7180</color>
+    <color name="logout_button_disabled">#303030</color>
+
+    <color name="hint_text">#BDBDBF</color>
+    <color name="field_label">#F3F3F4</color>
+    <color name="warning_red">#EA4F3F</color>
+    <!-- LED -->
+
+    <!-- PRESET -->
+
+</resources>

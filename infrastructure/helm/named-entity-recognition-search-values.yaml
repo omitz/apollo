@@ -1,0 +1,13 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/named-entity-recognition-search
+
+# Sets debug=True in the flask app, so that we get useful logs (full exception + stacktrace)
+debug: 'True'
+
+service:
+  port: 84
+
+resources: 
+  requests:
+    cpu: 100m
+    memory: 512Mi

@@ -1,0 +1,5 @@
+include ':aars:apollo-faceId-library-debug'
+include ':face-id-library'
+include ':app'
+rootProject.name = "FaceIdBackend"
+include ':faceid-celebrity10-model-installer'

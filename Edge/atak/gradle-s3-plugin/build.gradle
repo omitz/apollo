@@ -1,0 +1,59 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.1'
+    id 'idea'
+    id 'groovy'
+}
+
+wrapper {
+    gradleVersion = '6.2.2'
+}
+
+group = 'com.mgd.core'
+version = '1.1.0'
+
+// TC 2020-05-04 (Mon) --
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes([
+                'Manifest-Version': '1.0',
+                'Build-Tag'       : "$buildTag"
+        ])
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+//    amazonAWSVersion = '1.11.734'
+    amazonAWSVersion = '1.11.774'
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    api group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: amazonAWSVersion
+}
+
+gradlePlugin {
+    plugins {
+        s3Plugin {
+            id = 'com.mgd.core.gradle.s3'
+            displayName = 'Gradle S3 Plugin'
+            description = 'Lightweight S3 upload and download plugin'
+            implementationClass = 'com.mgd.core.gradle.S3Plugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/mygrocerydeals/gradle-s3-plugin/blob/master/README.md'
+    vcsUrl = 'https://github.com/mygrocerydeals/gradle-s3-plugin'
+    tags = ['aws', 's3']
+}

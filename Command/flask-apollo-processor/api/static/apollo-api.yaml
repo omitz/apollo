@@ -1,0 +1,967 @@
+openapi: 3.0.0
+info:
+  description: Apollo Rest API
+  version: 0.5.0
+  title: Flask Apollo
+  contact:
+    email: oluwole.omitowoju@caci.com
+  license:
+    name: ''
+    url: ''
+security:
+  - bearerAuth: []
+servers:
+  - url: '/' 
+  - url: 'https://api.apollo-cttso.com' 
+tags:
+  - name: Apollo Rest API
+    description: Example API for posting Apollo jobs and searching
+
+paths:
+  #AUTH
+  /login/:
+    post:
+      tags:
+        - auth
+      summary: 'Logs in with a valid username and password, return a user object'
+      requestBody:
+        description: >-
+          Username and password match
+        required: true
+        content:
+          application/json:
+            schema:
+              parameters:
+                - name: username
+                  in: query
+                  required: true
+                  description: 'username'
+                  schema:
+                    type: string
+                - name: password
+                  in: query
+                  required: true
+                  description: 'password'
+                  schema:
+                    type: string
+            example:
+              username: "susan admin"
+              password: "susanpassword"
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: username/password incorrect
+  /users/:
+    post:
+      tags:
+        - auth
+      summary: 'Creates a new user'
+      requestBody:
+        description: >-
+          Username and password match
+        required: true
+        content:
+          application/json:
+            schema:
+              parameters:
+                - name: username
+                  in: query
+                  required: true
+                  description: 'username'
+                  schema:
+                    type: string
+                - name: password
+                  in: query
+                  required: true
+                  description: 'password'
+                  schema:
+                    type: string
+                - name: roles
+                  in: query
+                  required: true
+                  description: '["user"] or ["admin", "user"]'
+                  schema:
+                    type: string
+            example:
+              username: "user1"
+              password: "password1"
+              roles: ["user"]
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+          
+  #ADMIN
+  /:
+    get:
+      tags:
+        - admin
+      summary: Health check resource to test if API is up and responding to requests
+      responses:
+        '200':
+          description: OK
+  /admin/restore_databases/:
+    get:
+      tags:
+        - admin
+      summary: 'Restores databases to fixtures saved in s3'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  
+  /admin/create_fixtures/:
+    get:
+      tags:
+        - admin
+      summary: 'Creates new databases fixtures from current databases, uploads them to s3'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  #JOBS
+
+  #This endpoint/path is used to process files through all of the pipeline.
+  #virus scan -> hashing -> file type checker -> analytics
+  /jobs/:  
+    post:
+      tags:
+        - jobs
+      summary: 'Process file (or all files in directory) through the pipeline from virus scan, file type checker...'
+      requestBody:
+        description: >-
+          Process file through the pipeline from virus scan, file type
+          checker...
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            examples:
+              file:
+                value:
+                  path: inputs/ocr/book1.png
+              directory:
+                value:
+                  path: inputs/ocr/
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  
+  #VIRUS SCANNER
+  /jobs/virus_scanner/:
+    post:
+      tags:
+        - jobs
+      summary: Post virus_scanner job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloVirusScannerJobRequest'
+            example:
+              path: inputs/ocr/book1.png
+              ignore_hash: true
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #OBJECT DETECTION
+  /jobs/object_detection/:
+    post:
+      tags:
+        - jobs
+      summary: Post object detection job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/ocr/book1.png
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/object_detection_vid/:
+    post:
+      tags:
+        - jobs
+      summary: Post video object detection job to be processed
+      requestBody:
+        description: Job Request Post Video Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/obj_det_vid/utterance_30.mp4
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/facial_recognition/:
+    post:
+      tags:
+        - jobs
+      summary: Post face recognition job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: /inputs/load_test/vips_large/Frankie_Muniz_0008_01.jpg
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/face_vid/:
+    post:
+      tags:
+        - jobs
+      summary: Post facial_recognition_video job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: /inputs/uploads/ewan_tells_story_of_how_he_adopted_jamyan.mp4
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/scene_classification/:
+    post:
+      tags:
+        - jobs
+      summary: Post scene classification job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/scene-classification/6.jpg
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/landmark/:
+    post:
+      tags:
+        - jobs
+      summary: Post landmark job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/landmark/basilica3.png
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/named_entity_recognition/:
+    post:
+      tags:
+        - jobs
+      summary: Post named entity recognition (NER) job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/ner/test.txt
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/speech_to_text/:
+    post:
+      tags:
+        - jobs
+      summary: Post speech to text job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/audio/demo3.wav
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/speaker_recognition/:
+    post:
+      tags:
+        - jobs
+      summary: Post speaker recognition job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/audio/demo3.wav
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/ocr_keras/:
+    post:
+      tags:
+        - jobs
+      summary: Post OCR job to be processed by ocr_keras service
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/ocr/book1.png
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/ocr_tesseract/:
+    post:
+      tags:
+        - jobs
+      summary: Post OCR job to be processed by ocr_tesseract service
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/ocr/book1.png
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/ocr_easy/:
+    post:
+      tags:
+        - jobs
+      summary: Post OCR job to be processed by ocr_easy service
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/ocr/book1.png
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'     
+  
+  /jobs/full_text_search/:
+    post:
+      tags:
+        - jobs
+      summary: Post fulltext job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/uploads/lebanon1.txt
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /jobs/text_sentiment/:
+    post:
+      tags:
+        - jobs
+      summary: Post sentiment job to be processed
+      requestBody:
+        description: Job Request Post Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apolloJobRequestPostBody'
+            example:
+              path: inputs/sentiment-analysis/negative_v2.txt
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #SEARCH
+  /search/tag/:
+    parameters:
+      - name: tag
+        in: query
+        required: true
+        description: 'Object tag to search by'
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        description: '0-indexed page number'
+        schema:
+          type: number
+      - name: items_per_page
+        in: query
+        required: false
+        description: 'number of items per page, default 30'
+        schema:
+          type: number
+    get:
+      tags:
+        - search
+      summary: Search for objects
+      parameters:
+        - in: query
+          name: tag
+          required: true
+          description: 'enter tag name i.e. airplane, knife, dog, cat'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #VIDEO SEARCH           
+  /search/tag_video/:
+    parameters:
+      - name: tag
+        in: query
+        required: true
+        description: Object tag to search by in video
+        schema:
+          type: string
+    get:
+      tags:
+        - search
+      summary: Search for objects by name
+      parameters:
+        - in: query
+          name: tag
+          required: true
+          description: 'enter tag name i.e. person, tie, suitcase'
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #SCENE SEARCH          
+  /search/scene_class/:
+    parameters:
+      - name: tag
+        in: query
+        required: true
+        description: Scene to search by
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        description: '0-indexed page number'
+        schema:
+          type: number
+      - name: items_per_page
+        in: query
+        required: false
+        description: 'number of items per page, default 30'
+        schema:
+          type: number
+    get:
+      tags:
+        - search
+      summary: Search for scenes by name
+      parameters:
+        - in: query
+          name: tag
+          required: true
+          description: >-
+            enter tag name i.e. Runway, landing deck, heliport, airfield,
+            office, food court, classroom
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #SCENE HIERARCHY SEARCH       
+  /search/scene_hierarchy/:
+    parameters:
+      - name: tag
+        in: query
+        required: true
+        description: Scene hierarchy class 'indoor' or 'outdoor'
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        description: '0-indexed page number'
+        schema:
+          type: number
+      - name: items_per_page
+        in: query
+        required: false
+        description: 'number of items per page, default 30'
+        schema:
+          type: number
+    get:
+      tags:
+        - search
+      summary: Search for scenes by hierarchy class
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  #NER SEARCH          
+  /search/ner/:
+    parameters:
+      - name: entity
+        in: query
+        required: true
+        description: Entity to search by
+        schema:
+          type: string
+    get:
+      tags:
+        - search
+      summary: Search for named entity
+      parameters:
+        - in: query
+          name: entity
+          required: true
+          description: 'enter named entity i.e. Lebanon, Hassan+Nasrallah'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  #FULLTEXT SEARCH FOR AUDIO/OCR
+  /search/full_text/:
+    parameters:
+      - name: query
+        in: query
+        required: true
+        description: Text to search for in audio or ocr
+        schema:
+          type: string
+    get:
+      tags:
+        - search
+      summary: Search for text in an audio file or ocr document
+      parameters:
+        - in: query
+          name: query
+          required: true
+          description: 'enter text i.e. epidemic, spy'
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #SENTIMENT_ANALYSIS SEARCH
+  /search/text_sentiment/:
+    parameters:
+      - name: sentiment
+        in: query
+        required: true
+        description: Sentiment, one of {postitive, negative, neutral}
+        schema:
+          type: string
+    get:
+      tags:
+        - search
+      summary: Search by sentiment classification of documents
+      parameters:
+        - name: sentiment
+          in: query
+          required: true
+          description: Sentiment, one of {postitive, negative, neutral}
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /search/results/:
+    get:
+      tags:
+        - search
+      summary: Get all analytic results for a given s3 file
+      parameters:
+        - name: file
+          in: query
+          required: false
+          description: The s3 path (no bucket name)
+          schema: 
+            type: string
+          example:
+            input/audio/bill_gates-TED.mp3
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'   
+
+  /search/get_signed_url/:
+    get:
+      tags:
+        - search
+      summary: Get S3 signed url of a file
+      parameters:
+        - name: key
+          in: query
+          required: true
+          description: s3 key of file (without bucket name)
+          schema:
+            type: string
+          example:
+            inputs/uploads/000000001342.jpg
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /search/check_database/:
+    get:
+      tags:
+        - search
+      summary: Check if database is up and receiving requests
+      parameters:
+        - name: model
+          in: query
+          required: true
+          description: name of the Model file
+          schema:
+            type: string
+          example:
+            SearchFullText
+        - name: path
+          in: query
+          required: false
+          description: The s3 path
+          schema: 
+            type: string
+          example:
+            s3://apollo-source-data/inputs/audio/bill_gates-TED.mp3
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #UPLOAD      
+  /upload/:
+    put:
+      summary: uploads a file to s3 and pushes a job to virus_scanner which will continue to rest of pipeline
+      tags:
+       - upload
+      requestBody:
+        description: File to upload
+        required: true
+        content:
+          multipart/form-data: #content is a form data
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #FACE SEARCH - takes a face image to search against
+  /upload/image/:
+    put:
+      tags:
+        - upload
+      summary: Facial recognition search by example
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      requestBody:
+        description: Image containing a face
+        required: true
+        content:
+          multipart/form-data: #content is a form data
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  
+  /upload/speaker/:
+    put:
+      tags:
+        - upload
+      summary: Speaker recognition search by example
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      requestBody:
+        description: video or audio file containing a sample of a speaker
+        required: true
+        content:
+          multipart/form-data: #content is a form data
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  #LANDMARK SEARCH - takes a file to search against
+  /upload/landmark/:
+    put:
+      tags:
+        - upload
+      summary: Landmark search by example
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: '0-indexed page number'
+          schema:
+            type: number
+        - name: items_per_page
+          in: query
+          required: false
+          description: 'number of items per page, default 30'
+          schema:
+            type: number
+      requestBody:
+        description: Image of a landmark to search by
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /upload/file_list/:
+    get:
+      tags:
+        - upload
+      summary: Returns list of files that have been uploaded to s3 (in the /uploads/ folder)
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+#Define objects to used for sending or receiving data
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    apolloJobRequestPostBody:
+      type: object
+      properties:
+        path:
+          type: string
+          format: string
+    apolloJobRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          format: string
+        name:
+          type: string
+          format: string
+    apolloVirusScannerJobRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          format: string
+        name:
+          type: string
+          format: string
+        ignore_hash:
+          type: boolean
+          format: string
+    apolloJobRequests:
+      type: object
+      properties:
+        jobRequest:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/apolloJobRequest'
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: User needs higher permissions to access this

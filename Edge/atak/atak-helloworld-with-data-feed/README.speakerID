@@ -1,0 +1,23 @@
+# How to compile
+```
+  ./build_apk.bash
+```
+
+# How to install:
+```
+  ./adb install atak_helloworld_with_speakerId.apk
+```
+
+# How to run:
+  After loading the helloworld plugin into ATAK 4.3, click the "SpeakerID" button.
+
+# Files modified from the original ATAK helloworld plugin:
+  app/build.gradle
+  app/src/main/AndroidManifest.xml
+  app/src/main/java/com/atakmap/android/helloworld/HelloWorldDropDownReceiver.java
+  app/src/main/java/com/atakmap/android/helloworld/SpeakerIdActivity.java
+  settings.gradle
+  app/src/main/res/layout/activity_speaker_id.xml
+  app/src/main/res/layout/hello_world_layout.xml
+  aars/speaker-id-library/
+  aars/datafeed-api-library/

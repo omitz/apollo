@@ -1,0 +1,6 @@
+Run the following to build the speakerID and dataFeed backend AARs, which are symbolic-linked by this project.
+
+```
+./build_and_symlink_latest_speakerid_aar.bash
+./build_and_symlink_latest_datafeed_aar.bash
+```

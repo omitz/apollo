@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apollo-application.fullname" . }}
+  labels:
+    {{- include "apollo-application.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "apollo-application.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "apollo-application.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if .Values.extra_shm }}
+      volumes:	
+      - name: dshm	
+        emptyDir:	
+          medium: Memory
+    {{- end }}
+      serviceAccountName: {{ include "apollo-application.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          {{- if .Values.debug }}
+            - name: DEBUG
+              value: "{{ .Values.debug }}"
+          {{- end }}
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.rabbitmq_host }}"
+            - name: MILVUS_HOST
+              value: milvus-release
+            - name: FACE_SEARCH_HOST
+              value: facenet-search-release-apollo-application    
+            - name: LANDMARK_SEARCH_HOST
+              value: landmark-search-release-apollo-application
+            - name: SPEAKER_SEARCH_HOST
+              value: speaker-search-release-apollo-application
+            - name: NER_SEARCH_HOST
+              value: named-entity-recognition-search-release-apollo-application
+            - name: NEO4J_HOST
+              value: neo4j-release-neo4j
+            - name: NEO4J_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-connection-secret
+                  key: auth
+            - name: VUE_APP_NEO4J_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-connection-secret
+                  key: auth
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-connection-secret
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-connection-secret
+                  key: password
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-connection-secret
+                  key: host
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-connection-secret
+                  key: password
+            {{- with .Values.extraEnv }}
+            {{ tpl . $ | nindent 12 }}
+            {{- end }}
+          {{- if .Values.extra_shm }}
+          volumeMounts:	
+          - mountPath: /dev/shm	
+            name: dshm	
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

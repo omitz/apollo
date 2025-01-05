@@ -1,0 +1,2 @@
+sentiment = positive
+polarity = 0.250000

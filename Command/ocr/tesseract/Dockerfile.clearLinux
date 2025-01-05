@@ -1,0 +1,71 @@
+FROM clearlinux:latest AS builder
+
+# 1.) Set the app directory:
+ARG APP_DIR=/app
+WORKDIR $APP_DIR
+
+
+# 2.) Install System Packages (stage1):
+# (Taken from https://github.com/clearlinux/dockerfiles.git)
+ARG swupd_args
+# Move to latest Clear Linux release to ensure
+# that the swupd command line arguments are
+# correct
+RUN swupd update --no-boot-update $swupd_args
+# Grab os-release info from the minimal base image so
+# that the new content matches the exact OS version
+COPY --from=clearlinux/os-core:latest /usr/lib/os-release /
+# Install additional content in a target directory
+# using the os version from the minimal base
+RUN source /os-release && \
+    mkdir /install_root \
+    && swupd os-install -V ${VERSION_ID} \
+    --path /install_root --statedir /swupd-state \
+    --bundles=os-core-update,tesseract --no-boot-update
+# For some Host OS configuration with redirect_dir on,
+# extra data are saved on the upper layer when the same
+# file exists on different layers. To minimize docker
+# image size, remove the overlapped files before copy.
+RUN mkdir /os_core_install
+COPY --from=clearlinux/os-core:latest / /os_core_install/
+RUN cd / && \
+    find os_core_install | sed -e 's/os_core_install/install_root/' | xargs rm -d &> /dev/null || true
+
+
+# 2.) Install System Packages (stage2):
+FROM clearlinux/os-core:latest
+ARG APP_DIR=/app
+WORKDIR $APP_DIR
+COPY --from=builder /install_root /
+# TC 2020-07-15 (Wed)
+# Add opencv and imagemaic
+RUN swupd bundle-add opencv-python
+RUN swupd bundle-add ImageMagick
+#RUN swupd bundle-add python-extras
+RUN swupd bundle-add feh
+# TC 2020-05-13 (Wed)
+# Download LTSM tesseract trained models:
+RUN swupd bundle-add os-core-search
+RUN swupd bundle-add curl
+RUN mkdir -p /usr/share/tessdata
+RUN cd /usr/share/tessdata && curl -JLO https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata && cd -
+RUN cd /usr/share/tessdata && curl -JLO https://github.com/tesseract-ocr/tessdata_best/raw/master/osd.traineddata && cd -
+
+
+# 3.) Install Python Packages:
+RUN python3 -m pip install --upgrade pip setuptools wheel
+COPY requirements.txt $APP_DIR/
+RUN python3 -m pip install -r requirements.txt
+
+
+# 4.) Install App
+COPY tests $APP_DIR/tests
+
+
+# 5.) clean-ups
+RUN swupd clean --all
+
+
+# 6.) Start the App
+CMD ["./tesseract_main.py", "tests/images/ocr.png", "/dev/stdout", "out.png", "debug.txt"]
+

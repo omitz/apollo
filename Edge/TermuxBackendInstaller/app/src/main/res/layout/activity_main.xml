@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEE"
+    tools:context=".MainActivity">
+
+    <!-- <TextView -->
+    <!--     android:layout_width="match_parent" -->
+    <!--     android:layout_height="wrap_content" -->
+    <!--     android:gravity="center" -->
+    <!--     android:padding="20sp" -->
+    <!--     android:text="Apollo Termux Back-end Installer" -->
+    <!--     android:textAlignment="center" -->
+    <!--     android:textSize="18sp" /> -->
+
+    <Button
+        android:id="@+id/uninstallBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0.) Uninstall Termux Packages" />
+
+    <Button
+        android:id="@+id/termuxBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1.) Install Termux Packages" />
+
+    <Button
+        android:id="@+id/aptBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2.) Install Apt Packages" />
+    
+    <Button
+        android:id="@+id/backEndBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3.) Install Back-ends and Media Data" />
+    
+    <Button
+        android:id="@+id/quitBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Exit" />
+    
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    
+
+</LinearLayout>

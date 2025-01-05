@@ -1,0 +1,2 @@
+keras-ocr==0.6.2
+tensorflow==2.0.1

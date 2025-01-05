@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.atakmap.android.apolloedge.plugin">
+
+
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+  <!-- Kaldi -->
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+  <!-- OCR / Face Recognition -->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-feature android:name="android.hardware.camera" />
+  <uses-feature android:name="android.hardware.camera.autofocus" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <application
+        tools:replace="android:theme"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
+        android:theme="@style/ATAKPluginTheme" >
+
+        <meta-data
+            android:name="plugin-api"
+            android:value="${atakApiVersion}" />
+        <meta-data
+            android:name="app_desc"
+            android:value="@string/app_desc" />
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/file_paths" />
+        
+        <!-- ************************************ -->
+        <!--     Login                            -->
+        <!-- ************************************ -->
+        <activity
+            android:name="com.atakmap.android.apolloedge.login.LoginActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity="atak.apolloedge.login.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
+        <!-- ************************************ -->
+        <!--    Upload                            -->
+        <!-- ************************************ -->
+        <activity
+            android:name="com.atakmap.android.apolloedge.upload.UploadMainActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity="atak.apolloedge.upload.UploadMainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+
+    <!-- ************************************ -->
+    <!--      Speaker Identification          -->
+    <!-- ************************************ -->
+    <activity
+        android:name="com.atakmap.android.apolloedge.speaker_recognition.SpeakerRecognitionActivity"
+        android:configChanges="orientation"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:taskAffinity="atak.apolloedge.speaker_recognition.SpeakerRecognitionActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+    </activity>
+
+
+    
+    <!-- ************************************ -->
+    <!--       Kaldi Speech-to-Text           -->
+    <!-- ************************************ -->
+    <activity
+        android:name="com.atakmap.android.apolloedge.speech_to_text.KaldiActivityV2"
+        android:configChanges="orientation"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:taskAffinity="atak.apolloedge.speech_to_text.KaldiActivityV2"
+        android:theme="@style/AppCompatTheme">
+    </activity>
+
+    <!-- ************************************ -->
+    <!--         Face Recognition             -->
+    <!-- ************************************ -->
+    <activity
+        android:name="com.atakmap.android.apolloedge.pp.facerecognizer.MainActivity"
+        android:configChanges="orientation"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        android:taskAffinity="atak.apolloedge.pp.facerecognizer.MainActivity"
+        android:theme="@style/AppCompatTheme"></activity>
+    <activity
+        android:name="com.atakmap.android.apolloedge.pp.facerecognizer.ViewResultsActivity"
+        android:theme="@style/AppCompatTheme">
+    </activity>
+    <activity
+        android:name="com.atakmap.android.apolloedge.pp.facerecognizer.ImageDetailSlideActivity"
+        android:theme="@style/AppCompatTheme" >
+    </activity>
+
+
+    <!-- ************************************ -->
+    <!--      Face Recognition (Stand-Alone)  -->
+    <!-- ************************************ -->
+    <activity
+        android:name="com.atakmap.android.apolloedge.face_recognition.FaceRecognitionActivity"
+        android:configChanges="orientation"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        android:taskAffinity="atak.apolloedge.face_recognition.FaceRecognitionActivity"
+        android:theme="@style/AppCompatTheme"></activity>
+
+
+    <!-- ************************************ -->
+    <!--             OCR                      -->
+    <!-- ************************************ -->
+    <activity
+        android:name="com.atakmap.android.apolloedge.ocr.OCRActivity"
+        android:configChanges="orientation"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:taskAffinity="atak.apolloedge.ocr.OCRActivity"
+        android:theme="@style/AppCompatTheme"></activity>
+    <activity
+        android:name="com.atakmap.android.apolloedge.ocr.LanguageActivity"
+        android:theme="@style/Theme.NoPreviewWindow">
+    </activity>
+
+
+    <!-- ************************************ -->
+    <!--            Mission Packge            -->
+    <!-- ************************************ -->
+
+        <activity
+            android:name="com.atakmap.android.apolloedge.ModelCopierActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true"
+            android:launchMode="singleTask">
+        </activity>
+
+    
+    <!-- ************************************ -->
+    <!--                 MISC                 -->
+    <!-- ************************************ -->
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="com.atakmap.android.apolloedge.plugin"
+        android:exported="false"
+        android:grantUriPermissions="true">
+      <meta-data
+          android:name="android.support.FILE_PROVIDER_PATHS"
+          android:resource="@xml/file_paths" />
+    </provider>
+  </application>
+</manifest>

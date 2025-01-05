@@ -1,0 +1,16 @@
+{
+    "comments": "For Tommy's local server, use serverUID= 192.168.1.167:8088:tcp",
+    "serverUID": "192.168.1.167:8088:tcp",
+    "feedName" : "helloworld",
+    "modelsInfo": [
+        {
+            "analytic": "SpeakerID",
+            "activity": "SpeakerIdActivity",
+            "dataPackages": [
+                {
+                    "name": "atak_uuid=speakerID_celebrity10.zip"
+                }
+            ]
+        }
+    ]
+}

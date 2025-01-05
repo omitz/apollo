@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- COMMON -->
+    <color name="white">#ffffff</color>
+    <color name="darker_gray">#121212</color>
+    <color name="lighter_gray">#aaaaaa</color>
+    <color name="timeline_background">#333</color>
+    <color name="dialog_background">#282828</color>
+    <color name="border_color">#77FFFFFF</color>
+
+    <color name="error_bg">#522</color>
+    <color name="error_text">#FAA</color>
+
+    <color name="new_content_bg">#252</color>
+    <color name="new_content_text">#AFA</color>
+
+    <color name="desynced_bg">#542</color>
+    <color name="desynced_text">#FDA</color>
+
+    <color name="missing_bg">#444</color>
+    <color name="missing_text">#AAA</color>
+
+    <color name="holo_blue">#33B5E5</color>
+    <color name="default_gray">#BEBEBE</color>
+    <color name="progress_bar_bg">#222</color>
+
+    <color name="password_tint">#CA0</color>
+
+    <color name="heading_yellow">#dfb228</color>
+
+</resources>

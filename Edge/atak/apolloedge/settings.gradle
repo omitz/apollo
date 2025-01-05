@@ -1,0 +1,9 @@
+rootProject.name='Apollo Edge'
+
+include ':app'
+include ':kaldi_models_v2'
+include ':aars:tesseract4android-2.0.0'
+include ':aars:tesseract4android-2.0.0-javadoc'
+//include ':mission-api-lib:libsrc'
+//include ':aars:speaker-id-library'
+include ':aars:apollo-faceId-library'

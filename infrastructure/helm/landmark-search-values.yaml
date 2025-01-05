@@ -1,0 +1,18 @@
+image:
+  repository: 604877064041.dkr.ecr.us-east-1.amazonaws.com/landmark-search
+
+extra_shm: true
+
+# Sets debug=True in the flask app, so that we get useful logs (full exception + stacktrace)
+debug: 'True'
+
+service:
+  port: 83
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1024Mi
+#  limits:
+#    cpu: 2000m
+#    memory: 2048Mi

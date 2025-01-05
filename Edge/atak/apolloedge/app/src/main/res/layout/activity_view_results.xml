@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2016 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.atakmap.android.apolloedge.pp.facerecognizer.ViewResultsActivity"
+    android:background="@color/dark_gray_apollo">
+
+    <TextView
+        android:id="@+id/header_face"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:padding = "8dp"
+        android:background="@color/black"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:text = "Face Recognition"/>
+
+  <com.google.android.material.tabs.TabLayout
+      android:id="@+id/tabLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constrainedHeight="true"
+      app:layout_constraintTop_toBottomOf="@+id/header_face"
+      app:layout_constraintBottom_toTopOf="@+id/recycler_view_imgs"
+      app:tabTextColor="@color/off_white" >
+
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/edge"/>
+
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/command"/>
+
+  </com.google.android.material.tabs.TabLayout>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_view_imgs"
+      android:background="@color/dark_gray_apollo"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constrainedHeight="true"
+      app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+      app:layout_constraintBottom_toTopOf="@+id/linLayout"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintVertical_chainStyle="packed" />
+
+  <LinearLayout
+      android:id="@+id/linLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintTop_toBottomOf="@+id/recycler_view_imgs"
+      app:layout_constraintBottom_toBottomOf="parent" >
+
+      <Button
+          android:id="@+id/importButton"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/import_image"
+          android:textSize="20sp"
+          style="@style/apolloDarkButton"
+          android:textAllCaps="false" />
+
+      <Button
+          android:id="@+id/sync_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/sync_results"
+          android:textSize="20sp"
+          style="@style/apolloDarkButton"
+          android:textAllCaps="false" />
+
+  </LinearLayout>
+
+  <com.google.android.material.bottomnavigation.BottomNavigationView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:layout_editor_absoluteX="193dp"
+      tools:layout_editor_absoluteY="601dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

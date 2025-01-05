@@ -1,0 +1,614 @@
+openapi: '3.0.0'
+info:
+  description: Enrollmnet REST API
+  version: 0.5.0
+  title: Enrollment REST API
+  contact:
+    email: oluwole.omitowoju@caci.com
+  license:
+    name: ''
+    url: ''
+# 1) Define the security scheme type (HTTP bearer)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: User needs higher permissions to access this
+      
+# 2) Apply the security globally to all operations
+security:
+  - bearerAuth: []
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: Enrollment Rest API
+    description: REST API for enrollmenet upload, download, and mantainance. 
+
+paths:
+  /login:
+
+    ###########################################      
+    # LOGIN POST
+    ###########################################
+    post:
+      description: Get authentication token
+      tags:
+        -  LOGIN
+      summary: Get user authentication token
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+            examples:
+              regular user:
+                value:
+                  username: john user
+                  password: johnpassword
+              admin:
+                value:
+                  username: susan admin
+                  password: susanpassword
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+  /users:
+    ###########################################      
+    # USERS POST
+    ###########################################
+    post:
+      description: Create a new user or replace an existing user (admin required)
+      tags:
+        -  LOGIN
+      summary: Adds a new user or replace an existing user
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    type: string
+            examples:
+              regular user:
+                value:
+                  username: john user
+                  password: johnpassword
+                  roles: ["user"]
+              admin:
+                value:
+                  username: susan admin
+                  password: susanpassword
+                  roles: ["admin", "user"]
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+        '401':
+          description: Unauthorized
+
+  /createmodel/vip:
+
+    ###########################################      
+    # VIP GET
+    ###########################################      
+    get:
+      description: List vip-related information 
+      tags:
+        -  VIP
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: vip
+          in: query
+          description: 'Optional: Name of a specific vip (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+        - name: file
+          in: query
+          description: 'Optional: Name of the file within the vip (eg., "profile.jpg")'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+    ###########################################      
+    # VIP PUT
+    ###########################################      
+    put:
+      description: Add new data sample to a specific vip
+      tags:
+        -  VIP
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: vip
+          required: true
+          in: query
+          description: 'Name of the vip to add (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+            default: Jim_Gaffigan
+        - name: audio-max-length
+          in: query
+          description: 'Optional for SpeakerID: Max audio length to check for English speech (default 30 seconds)'
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content: 
+          multipart/form-data: # Media type
+            schema:
+              type: object
+              properties: # Request parts
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+    ###########################################      
+    # VIP DELETE
+    ###########################################      
+    delete:
+      description: Delete old data sample from a specific vip or delete the entire vip
+      tags:
+        -  VIP
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: vip
+          in: query
+          required: true
+          description: 'Name of the vip (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+            default: Jim_Gaffigan
+        - name: file
+          in: query
+          description: 'Optional: Name of the file within the vip (eg., "jim_gaffigan.jpg")'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+  /createmodel/vip/download:
+
+    ###########################################      
+    # VIP/DOWNLOAD GET
+    ###########################################      
+    get:
+      description: Download a data file, a VIP, or all VIPs
+      tags:
+        -  VIP
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: vip
+          in: query
+          description: 'Optional: Name of a specific vip (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+        - name: file
+          in: query
+          description: 'Optional: Name of a specific file within vip (eg., profile.jpg)'
+          schema:
+            type: string
+        - name: dry-run
+          in: query
+          description: 'Optional: dry-run will output version and download information'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+  /createmodel/mission:
+
+    ###########################################      
+    # MISSION GET
+    ###########################################      
+    get:
+      description: List mission-related information 
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: mission
+          in: query
+          description: 'Optional: Name of a specific mission (eg., celebrity10)'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+    ###########################################      
+    # MISSION POST
+    ###########################################      
+    post:
+      description: Train and creat a classifier for a specific mission.  For mission=celebrity10, this proceess can take about 40 seconds for faceid and 2 mintues for speakerid.
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: mission
+          required: true
+          in: query
+          description: 'Name of the mission (eg., celebrity10)'
+          schema:
+            type: string
+            default: celebrity10
+        - name: audio-max-length
+          in: query
+          description: 'Optional for SpeakerID: Max audio length to extract for English speech (default 30 seconds)'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+          
+
+    ###########################################      
+    # MISSION PUT
+    ###########################################      
+    put:
+      description: Add a new vip to a specific mission
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: vip
+          required: true
+          in: query
+          description: 'Name of the vip (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+            default: Jim_Gaffigan
+        - name: mission
+          required: true
+          in: query
+          description: 'Name of the mission (eg., celebrity10)'
+          schema:
+            type: string
+            default: celebrity10
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+    ###########################################      
+    # MISSION DELETE
+    ###########################################      
+    delete:
+      description: Delete a vip from a specific mission
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: mission
+          required: true
+          in: query
+          description: 'Name of the enrollment (eg., celebrity10)'
+          schema:
+            type: string
+            default: celebrity10
+        - name: vip
+          required: true
+          in: query
+          description: 'Name of the vip within the mission (eg., Jim_Gaffigan)'
+          schema:
+            type: string
+            default: Jim_Gaffigan
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+  /createmodel/mission/download:
+
+    ###########################################      
+    # MISSION/DOWNLOAD GET
+    ###########################################      
+    get:
+      description: Download mission-related data
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: mission
+          required: true
+          in: query
+          description: 'Name of the enrollment (eg., celebrity10)'
+          schema:
+            type: string
+            default: celebrity10
+        - name: download
+          required: true
+          in: query
+          description: 'Either "atak", "dataset", or "performance"'
+          schema:
+            type: string
+            default: dataset
+        - name: dry-run
+          in: query
+          description: 'Optional: dry-run will output version and download information'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+
+  /createmodel/mission/duplicate:
+    
+    ###########################################      
+    # MISSION/DUPLICATE PUT
+    ###########################################      
+    put:
+      description: Duplicate a specific mission
+      tags:
+        -  MISSION
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: old-mission
+          required: true
+          in: query
+          description: 'Name of the old mission (eg., celebrity10)'
+          schema:
+            type: string
+            default: celebrity10
+        - name: new-mission
+          required: true
+          in: query
+          description: 'Name of the new mission (eg., celebrity10_v2)'
+          schema:
+            type: string
+            default: celebrity10_v2
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+    
+
+  /createmodel/misc:
+
+    ###########################################      
+    # MISC GET
+    ###########################################      
+    get:
+      description: Get Log Entries
+      tags:
+        -  MISC
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+        - name: filter-user
+          in: query
+          description: 'Optional: Filter by specific user, (eg. Wole)'
+          schema:
+            type: string
+        - name: raw-sql
+          in: query
+          description: 'Optional: Direct raw SQL query (eg. SELECT * FROM enrollment where "timestamp" > ''2021-09-21'';)'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+
+            
+    ###########################################      
+    # MISC DELETE
+    ###########################################      
+    delete:
+      description: Delete internal cache
+      tags:
+        -  MISC
+      parameters:
+        - name: analytic
+          required: true
+          in: query
+          description: 'Either speakerid or faceid'
+          schema:
+            type: string
+            default: faceid
+        - name: user
+          required: true
+          in: query
+          description: 'User login'
+          schema:
+            type: string
+            default: Wole
+      responses:
+        '200':
+          description: Success response
+        '400':
+          description: Unsucessful response
+                    
+          

@@ -1,0 +1,58 @@
+plugins {
+    id 'com.android.library'
+}
+
+apply plugin: 'com.kezong.fat-aar'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "0.9.7"
+        ndk {
+            abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        // Here's the version info:
+        // see  https://developer.android.com/studio/publish/versioning
+        archivesBaseName = "apollo-faceId-library"
+        setProperty("archivesBaseName", "${archivesBaseName}-$versionName")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/jni/CMakeLists.txt'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // Use below for project module 
+    // implementation 'org.tensorflow:tensorflow-android:1.13.1' // 1.13.0-rc0
+
+    // Use below for fat-aar
+    embed 'org.tensorflow:tensorflow-android:1.13.1' // 1.13.0-rc0
+
+}

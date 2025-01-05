@@ -1,0 +1,3 @@
+include ':aars:speaker-id-library'
+include ':aars:datafeed-api-library'
+include ':app'

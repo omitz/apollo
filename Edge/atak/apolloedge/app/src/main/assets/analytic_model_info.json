@@ -1,0 +1,17 @@
+{
+    "comments": "Apollo Edge local test server, use serverUID= 192.168.1.167:8088:tcp",
+    "serverUID": "takserver.apollo-cttso.com:8088:tcp",
+    "serverUID_gone": "192.168.1.167:8088:tcp",
+    "feedName" : "apollo",
+    "modelsInfo": [
+        {
+            "analytic": "SpeakerID",
+            "activity": "speaker_recognition.SpeakerRecognitionActivity",
+            "dataPackages": [
+                {
+                    "name": "atak_uuid=ApolloSpeakerID-10VIP.zip"
+                }
+            ]
+        }
+    ]
+}

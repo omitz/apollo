@@ -1,0 +1,1 @@
+"Textblob is amazingly difficult to use. What great pain!"

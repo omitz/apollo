@@ -1,0 +1,9 @@
+.env
+env
+venv
+
+.vscode
+
+features.db
+
+*.png

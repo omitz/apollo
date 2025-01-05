@@ -1,0 +1,106 @@
+def ApolloDataFeedVersion = '0.9.0'
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.kezong.fat-aar'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName ApolloDataFeedVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        // Here's the version info:
+        // see  https://developer.android.com/studio/publish/versioning
+        archivesBaseName = "apollo-datafeed-library"
+        versionName = android.defaultConfig.versionName
+        setProperty("archivesBaseName", "${archivesBaseName}-$versionName")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+
+// afterEvaluate {
+//     // for app test, copy the final aar to application libs
+//     android.libraryVariants.all { variant ->
+//         File outputFile = variant.outputs.first().outputFile
+//         tasks.named("assemble${variant.name.capitalize()}").configure {
+//             doLast {
+//                 copy {
+//                     from outputFile
+//                     into "../helloworld/libs"
+//                     rename outputFile.name, "fat-aar-final.aar"
+//                 }
+//             }
+//         }
+//     }
+// }
+
+dependencies {
+
+    // implementation 'androidx.appcompat:appcompat:1.3.1'
+    // implementation 'com.google.android.material:material:1.4.0'
+    // testImplementation 'junit:junit:4.+'
+    // androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    // androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    embed project(path: ':aars:mission-api-library', configuration: 'default')
+    embed project(path: ':data-feed-library', configuration: 'default')
+
+    // data-feed-library dependency 
+    implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.caci.apollo' 
+            // artifactId 'datafeed_api_library'
+            artifactId 'apollo-datafeed-library'
+            version ApolloDataFeedVersion
+            artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+
+            //generate pom nodes for dependencies
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                println dependenciesNode
+                
+            configurations.implementation.allDependencies.each {
+                    dependency ->
+                    if (dependency.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        println dependency.group
+                        dependencyNode.appendNode('groupId', dependency.group)
+                        dependencyNode.appendNode('artifactId', dependency.name)
+                        dependencyNode.appendNode('version', dependency.version)
+                    }
+                }
+            }
+        }
+    }
+    //publish to filesystem repo
+    repositories{
+        maven {
+            url "$buildDir/repo"
+        }
+    }
+}

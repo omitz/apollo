@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.atakmap.android.apolloedge.speaker_recognition.SpeakerRecognitionActivity"
+    android:background="@color/dark_gray_apollo">
+
+
+    <TextView
+        android:id="@+id/header_speakerid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:padding = "8dp"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:text = "Speaker Recognition"/>
+
+    <TextView
+        android:id="@+id/speakerid_model_version"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:text = "model version = loading..."/>
+    
+
+      <Button
+          android:id="@+id/inputAudioFile_btn"
+          style="@style/apolloDarkButton"
+          android:drawableStart="@drawable/importaudiofile"
+          android:drawablePadding="30dp"
+          android:gravity="start"
+          android:singleLine="true"
+          android:text="Import Audio File" />
+
+      <Button
+          android:id="@+id/recordAudio_btn"
+          style="@style/apolloDarkButton"
+          android:drawableStart="@drawable/recordaudio"
+          android:drawablePadding="30dp"
+          android:gravity="start"
+          android:singleLine="true"
+          android:text="Record Audio" />
+
+      <TextView
+          android:id="@+id/result_text"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:gravity="bottom"
+          android:scrollbars="vertical"
+          android:textColor="#F3F3F4"
+          android:textSize="30sp"
+          android:textAppearance="?android:attr/textAppearanceMedium" />
+      
+      
+</LinearLayout>

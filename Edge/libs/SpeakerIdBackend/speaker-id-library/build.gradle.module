@@ -1,0 +1,99 @@
+plugins {
+    id 'com.android.library'
+}
+
+def ApolloEdgeLibVersion = '0.9.7'
+
+apply plugin: 'com.kezong.fat-aar'
+
+repositories {
+    google()
+    // maven {
+    //     url  "https://dl.bintray.com/alphacep/vosk"
+    // }
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 2
+        versionName ApolloEdgeLibVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        // Here's the version info:
+        // see  https://developer.android.com/studio/publish/versioning
+        archivesBaseName = "apollo-speakerId-library"
+        versionName = android.defaultConfig.versionName
+        setProperty("archivesBaseName", "${archivesBaseName}-$versionName")
+
+        // Heres's parameter for unit test
+        buildConfigField "String", "TEST_PARAM1", "\"$TEST_PARAM1\""
+        buildConfigField "String", "TEST_PARAM2", "\"$TEST_PARAM2\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0' //needed for permssion in unit test
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    // Use below for project module
+    // implementation 'com.alphacep:vosk-android:0.3.17'
+    implementation project (':aars:vosk-android-0.3.17')
+    implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    implementation 'com.google.code.gson:gson:2.8.5' // 2.8.6 causes illegal class
+    implementation ("commons-io:commons-io:2.6")   // 2.8.0 BigIntegerCounter error
+    implementation 'net.razorvine:pickle:1.1' // for pickle
+
+    // Use below for fat-aar
+    // embed 'com.alphacep:vosk-android:0.3.17'
+    // embed ('com.googlecode.json-simple:json-simple:1.1.1') {
+    //     exclude group: 'junit', module: 'junit'
+    // }
+    // embed 'com.google.code.gson:gson:2.8.5' // 2.8.6 causes illegal class
+    // embed ("commons-io:commons-io:2.6")   // 2.8.0 BigIntegerCounter error
+    // embed 'net.razorvine:pickle:1.1' // for pickle
+}
+
+
+version = ApolloEdgeLibVersion
+group = 'us.forcenex'
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact("build/outputs/aar/apollo-speakerId-library-$version-release"+".aar") {
+                extension 'aar'
+            }}}
+    repositories {
+        maven {
+            name 'nexus'
+            url "https://nexus.forcenex.us/repository/forcenexus-maven/"
+            credentials {
+                username project.repoUser
+                password project.repoPassword
+            }}}}
+

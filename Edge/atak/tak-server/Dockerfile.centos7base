@@ -1,0 +1,48 @@
+# How to build:
+#
+#  docker build --rm -t takserver:centos7 -f Dockerfile.centos7 .
+#
+# How to run:
+#
+#  docker run --name takserver -it --rm -p 8080:8080 -p 8443:8443 -p 8444:8444 -p 8446:8446 -p 8089:8089 -p 8087:8087 -p 8088:8088 -p 9000:9000 -p 9001:9001 -v /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro  takserver:centos7
+#
+#
+
+FROM centos:7
+#ENV container docker
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+#VOLUME [ "/sys/fs/cgroup"]
+
+## Required
+RUN echo -e "* soft nofile 32768\n* hard nofile 32768"  | tee --append /etc/security/limits.conf > /dev/null
+RUN yum update -y
+RUN yum install epel-release -y
+RUN yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm -y
+RUN yum update -y
+COPY takserver-4.1-RELEASE33.noarch.rpm ./
+RUN yum install takserver-4.1-RELEASE33.noarch.rpm -y
+RUN rm takserver-4.1-RELEASE33.noarch.rpm
+RUN yum install initscripts -y
+
+## Optional
+RUN yum install bash-completion bash-completion-extras -y && \
+    yum install emacs-nox -y && \
+    yum install nano -y && \
+    yum install nmap -y && \
+    yum install less -y
+
+## Clean up
+RUN yum clean all && yum update -y
+
+CMD ["/usr/sbin/init"]
+
+
+

@@ -1,0 +1,6 @@
+include ':aars:vosk-android-0.3.17'
+include ':aars:speaker-id-library-debug'
+include ':speaker-id-library'
+include ':app'
+rootProject.name = "SpeakerIdBackend"
+include ':speakerid-celebrity10-model-installer'

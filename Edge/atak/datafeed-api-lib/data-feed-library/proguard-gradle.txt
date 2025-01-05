@@ -1,0 +1,71 @@
+-dontskipnonpubliclibraryclasses
+-dontshrink
+-dontoptimize
+# TC
+-dontobfuscate
+
+############### ACRA specifics
+# we need line numbers in our stack traces otherwise they are pretty useless
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
+
+-applymapping <atak.proguard.mapping>
+-repackageclasses ataklib.missionapi
+
+-keepattributes *Annotation*
+-keepattributes Signature, InnerClasses
+
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+
+
+# Preserve all native method names and the names of their classes.
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclassmembers class * {
+    @org.simpleframework.xml.* *;
+}
+
+-keepclassmembers class * {
+    public ** fromJSON(**);
+    public ** fromJSONList(**);
+    public ** toJSON();
+    public ** toJSONList(**);
+	public static ** fromJSON(com.atakmap.android.missionapi.model.json.Feed, com.atakmap.android.missionapi.model.json.JSONData);
+}
+
+
+# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# For fromJSON method called out above
+-keepnames class com.atakmap.android.missionapi.model.json.Feed
+-keepnames class com.atakmap.android.missionapi.model.json.JSONData
+
+-keep class com.atakmap.android.missionapi.interfaces.Unread {*;}
+
+-keep class com.atakmap.android.missionapi.net.http.delete.* {*;}
+-keep class com.atakmap.android.missionapi.net.http.get.* {*;}
+-keep class com.atakmap.android.missionapi.net.http.put.* {*;}
+
+-dontwarn androidx.**
+

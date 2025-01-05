@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.edge.MainActivity"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select analysis type"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.172" />
+
+    <Button
+        android:id="@+id/uploadButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startUpload"
+        android:text="Upload"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="163dp" />
+
+    <Button
+        android:id="@+id/speechButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startSpeech"
+        android:text="Speech-to-text"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="163dp" />
+
+    <Button
+        android:id="@+id/speakerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startSpeaker"
+        android:text="Speaker Recognition"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="229dp" />
+
+    <Button
+        android:id="@+id/personButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startPerson"
+        android:text="Facial Recognition"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="302dp" />
+
+    <Button
+        android:id="@+id/textButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startText"
+        android:text="OCR"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="275dp" />
+
+<!--    Uncomment after CDR-->
+<!--    <Button-->
+<!--        android:id="@+id/objectButton"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:onClick="startObject"-->
+<!--        android:text="Object Recognition"-->
+<!--        tools:layout_editor_absoluteX="161dp"-->
+<!--        tools:layout_editor_absoluteY="369dp" />-->
+
+    <Button
+        android:id="@+id/virusScanButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startVirusScan"
+        android:text="Import File - Virus Detection"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="369dp" />
+
+</LinearLayout>

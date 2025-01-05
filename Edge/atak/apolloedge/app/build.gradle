@@ -1,0 +1,232 @@
+def PLUGIN_VERSION = "0.9.0"
+def ATAK_VERSION = "4.3.0"
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+repositories {
+    google()
+    // vosk is included in speakerID aar
+    // maven {
+    //     url  "https://dl.bintray.com/alphacep/vosk"
+    // }
+
+    // local maven repository:
+    maven {
+        url {"$project.projectDir/../aars/speaker_id_repo/"}
+        content {
+            includeGroup "com.caci.apollo"
+        }
+    }
+    maven {
+        url {"$project.projectDir/../aars/datafeed_api_repo/"}
+        content {
+            includeGroup "com.caci.apollo"
+        }
+    }
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    // No version of NDK matched the requested version 20.0.5594570. Versions available locally: 21.0.6113669, 21.0.6113669
+    ndkVersion "21.0.6113669"
+
+    defaultConfig {
+        applicationId "com.atakmap.android.apolloedge.plugin"
+        // minSdkVersion 21
+        // OCR needs SDK >= 23
+        minSdkVersion 26
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 26
+        versionCode 1
+        versionName "0.9.8"     //  2021-09-27 (Mon)
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        // Here's the version info:
+        // see  https://developer.android.com/studio/publish/versioning
+        archivesBaseName = "apollo-edge"
+        setProperty("archivesBaseName", "${archivesBaseName}-$versionName")
+        
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == "com.android.support") {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion "26.+"
+                }
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/jni/CMakeLists.txt'
+        }
+    }
+
+    signingConfigs {
+        debug {
+            if (new File("sdk/android_keystore").exists()) {
+                 storeFile file("../sdk/android_keystore")
+            } else { 
+                 storeFile file("../../../android_keystore")
+            }
+            storePassword "tnttnt"
+            keyAlias "wintec_mapping"
+            keyPassword "tnttnt"
+        }
+
+        release {
+            if (new File("sdk/android_keystore").exists()) {
+                storeFile file("../sdk/android_keystore")
+            } else { 
+                storeFile file("../../../android_keystore")
+            }
+            storePassword "tnttnt"
+            keyAlias "wintec_mapping"
+            keyPassword "tnttnt"
+        }
+    }
+
+    flavorDimensions "application"
+
+    productFlavors {
+        civ {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CIV"]
+        }
+
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    if(file("$project.projectDir/../espresso/testSetup.gradle").exists()) {
+         apply from: '../espresso/testSetup.gradle'
+    } else { 
+         println("espresso test harness not found")
+    }
+
+    // If libvosk is included twice (one from speakerID aar, one from speech-to-text
+    // packagingOptions {
+    //     pickFirst 'lib/x86_64/libvosk_jni.so'
+    //     pickFirst 'lib/armeabi-v7a/libvosk_jni.so'
+    //     pickFirst 'lib/x86/libvosk_jni.so'
+    //     pickFirst 'lib/arm64-v8a/libvosk_jni.so'
+    // }
+
+}
+
+dependencies {
+
+    if (new File("$project.projectDir/../../../ATAK/app/build/libs/main.jar").exists()) {
+        println("using the autobuilder version of main.jar")
+        compileOnly fileTree(dir: '../../../ATAK/app/build/libs', include: '*.jar')
+    } else if (new File("$project.projectDir/../../../main.jar").exists()) {
+        println("using the sdk version of main.jar")
+        compileOnly fileTree(dir: '../../..', include: '*.jar')
+    } else if (new File("sdk/main.jar").exists()) {
+        println("using the local version of main.jar")
+        compileOnly fileTree(dir: '../sdk/main.jar', include: '*.jar')
+    } else if (project.rootProject.file("local.properties").exists()) {
+        def props = new Properties()
+        props.load(project.rootProject.file("local.properties").newDataInputStream())
+        def sdkdir = props.getProperty("sdk.path").toString()
+        if (sdkdir == 'null') {
+            println("error reading sdk.path from the local.properties file, this should point to the main.jar file")
+        }
+        if (new File(sdkdir).exists()) {
+           println("using the local version of ${sdkdir}")
+           compileOnly fileTree(dir: "${sdkdir}", include: '*.jar')
+        }
+    } else {
+        println("WARNING: could not find the sdk")
+    }
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+
+    // Since the support-v4 libraries are completely supplied by 
+    // the core, the recyclerview version needs to match and the 
+    // support-v4 module needs to be excluded from the plugin 
+    implementation ('androidx.recyclerview:recyclerview:1.0.0') {
+        exclude module: 'support-v4'
+    }
+
+
+    //facial
+    //implementation 'com.google.android.material:material:1.1.0-alpha03'
+//    implementation 'org.tensorflow:tensorflow-android:1.13.0-rc0'
+    // for snackbar
+    implementation 'com.google.android.material:material:1.0.0'
+    // For control over item selection of both touch and mouse driven selection
+
+    //kaldi / vosk / speech-to-text dependencies
+//    implementation 'com.alphacep:vosk-android:0.3.17' // note this conflicts with speakerID aar
+    implementation project(':kaldi_models_v2')
+    implementation 'commons-io:commons-io:2.8.0'
+
+    // speaker recognition
+    // implementation project (':aars:speaker-id-library')
+    implementation ('com.caci.apollo:apollo-speakerId-library:0.9.8') {
+        exclude group: 'junit', module: 'junit'
+    }
+    
+
+    // face recognition (stand-alone version)
+    implementation project (':aars:apollo-faceId-library')
+
+
+    //ocr dependencies
+    implementation project(':aars:tesseract4android-2.0.0')
+    implementation project(':aars:tesseract4android-2.0.0-javadoc')
+
+    //file importer dependencies
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.27.0-eap13"
+
+    // //mission-api 
+    // implementation project(':mission-api-lib:libsrc')
+
+    // datafeed-api
+    implementation ('com.caci.apollo:apollo-datafeed-library:0.9.0') {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    //json
+    implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+
+}
+
+

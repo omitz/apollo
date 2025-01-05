@@ -1,0 +1,40 @@
+version: '3.5'
+services: 
+  rabbitmq:
+    image: rabbitmq:3.8.2-rc.1-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - server
+  postgres:
+    image: postgres:12.2
+    ports: 
+      - 5432:5432 
+    environment:
+      - POSTGRES_PASSWORD
+    networks:
+      - server
+  face:
+    networks:
+      - server
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: face-refactor-prototype/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - MILVUS_HOST
+    volumes:
+      - "./face-refactor-prototype:/code"  
+      - "./apollo:/code/apollo"
+networks:
+  server:
+    driver: bridge

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#303030">
+  
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:padding = "8dp"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#F3F3F4"
+        android:textSize="30sp"
+        android:text = "Speaker Recognition"/>
+
+    <TextView
+        android:id="@+id/speakerid_model_sig"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:text = "model version = loading..."/>
+
+    <TextView
+        android:id="@+id/recordAudio_lbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="8sp"
+        android:text="Record Audio"
+        android:textAlignment="center"
+        android:textColor="#F3F3F4"
+        android:textSize="20sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <Button
+        android:id="@+id/startRecording_btn"
+        style="@style/apolloDarkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#303030"
+        android:drawableStart="@drawable/ic_rec"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <RelativeLayout
+        android:id="@+id/progressBarLayout"
+        android:background="#303030"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <ProgressBar
+          android:id="@+id/recording_progressBar"
+          style="?android:attr/progressBarStyleHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="20dp"
+          android:progressBackgroundTint="#2E4359"
+          android:progressTint="#4285A9"
+          android:progress="50"/>
+      
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignStart="@+id/recording_progressBar"
+          android:layout_below="@+id/recording_progressBar"
+          android:textColor="#F3F3F4"
+          android:text = "Time"/>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignEnd="@+id/recording_progressBar"
+          android:layout_below="@+id/recording_progressBar"
+          android:textColor="#F3F3F4"
+          android:text = "5 SEC"/>
+      
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/redoPlayProcessLayout"
+        android:orientation="vertical"
+        android:background="#303030"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/redo_btn"
+        android:textAllCaps="false"
+        android:background="#000000"
+        android:textColor="#F3F3F4"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:text = "Redo"/>
+      
+    <Button
+        android:id="@+id/playback_btn"
+        android:textAllCaps="false"
+        android:background="#000000"
+        android:textColor="#F3F3F4"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:text = "Playback"/>
+
+    <Button
+        android:id="@+id/process_btn"
+        android:textAllCaps="false"
+        android:background="#000000"
+        android:textColor="#F3F3F4"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:text = "Process"/>
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40dp"/>
+
+
+    <ProgressBar
+        android:id="@+id/process_progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#F00"
+        android:indeterminateTintMode="src_in"
+        android:minWidth="150dp"
+        android:minHeight="150dp"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scoreResultLayout"
+        android:background="#303030"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tmp_textview1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="8sp"
+        android:text="Speaker's voice most similar to:"
+        android:textAlignment="textStart"
+        android:textColor="#F3F3F4"
+        android:textSize="20sp" />
+
+    <Space
+        android:id="@+id/tmp_space1"
+        app:layout_constraintTop_toBottomOf="@+id/tmp_textview1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <TextView
+        android:id="@+id/speakerName"
+        app:layout_constraintTop_toBottomOf="@+id/tmp_space1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="8sp"
+        android:text="Tommy Chang"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+    <Space
+        android:id="@+id/tmp_space2"
+        app:layout_constraintTop_toBottomOf="@+id/speakerName"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"/>
+
+    <TextView
+        android:id="@+id/color_bar"
+        app:layout_constraintTop_toBottomOf="@+id/tmp_space2"
+        android:background="@drawable/color_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp" />
+    
+    <TextView
+        android:id="@+id/sim_score"
+        app:layout_constraintBottom_toTopOf="@+id/color_bar"
+        app:layout_constraintStart_toStartOf="@+id/color_bar"
+        app:layout_constraintEnd_toEndOf="@+id/color_bar"
+        app:layout_constraintHorizontal_bias="0.25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#F3F3F4"
+        android:text="50"
+        android:textSize="30sp" />
+
+
+    <LinearLayout
+        android:id="@+id/imgViewLayout"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/color_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#303030"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Space
+            android:layout_weight="0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <ImageView
+        android:id="@+id/spkrID_profilePic"
+        android:layout_weight="1"
+        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:contentDescription="SpeakerID Pic" />
+
+        <Space
+            android:layout_weight="0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+
+    </LinearLayout>
+
+        <!-- android:layout_weight="1" -->
+        <!-- android:layout_width="50dp" -->
+        <!-- android:layout_height="wrap_content" -->
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- app:layout_constraintTop_toBottomOf="@+id/color_bar" -->
+        <!-- app:layout_constraintBottom_toBottomOf="parent" -->
+        <!-- app:layout_constraintLeft_toLeftOf="parent" -->
+        <!-- app:layout_constraintRight_toRightOf="parent" -->
+        <!-- android:adjustViewBounds ="true" -->
+        <!-- android:scaleType="fitCenter" -->
+
+    
+
+</LinearLayout>

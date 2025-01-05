@@ -1,0 +1,638 @@
+version: '3.5'
+networks:
+  command-server:
+    driver: bridge
+services:
+  ui:
+    build:
+      context: ./
+      dockerfile: command-ui/Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - VUE_APP_ANALYTIC_ENV
+      - VUE_APP_NEO4J_AUTH=$NEO4J_AUTH
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+    volumes:
+      - "./command-ui/src/:/code/src/"
+  edge-enroll-ui:
+    build:
+      context: ./
+      dockerfile: edge-enroll-ui/Dockerfile
+    ports:
+      - 4000:4000
+    environment:
+      - VUE_APP_ANALYTIC_ENV
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+    volumes:
+      - "./edge-enroll-ui/src/:/code/src/"
+  localstack:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/localstack/localstack:0.11.1
+    expose:
+      - 4566
+      - 4572
+    ports:
+      - '4563-4599:4563-4599'
+      - '8055:8080'
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - './.localstack:/tmp/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - command-server
+  facenet-rabbit-consumer:
+    depends_on:
+      - rabbitmq
+      - postgres
+      - milvus
+      - localstack
+    build:
+      context: ./
+      dockerfile: face/facenet_rabbit_consumer/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST
+      - POSTGRES_PASSWORD
+      - MILVUS_HOST
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./face/facenet_rabbit_consumer:/code/face/facenet_rabbit_consumer"
+    networks:
+      - command-server
+  neo4j:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/neo4j:4.0.4
+    expose:
+      - 7474
+      - 7473
+      - 7687
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    environment:
+      - NEO4J_AUTH
+    networks:
+      - command-server
+  milvus:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/milvusdb/milvus:0.10.1-cpu-d072020-bd02b1
+    expose:
+      - 19530
+      - 19121
+      - 9091
+    ports:
+      - 19530:19530
+      - 19121:19121
+      - 9091:9091
+    volumes:
+      - "./milvus_apollo/milvus/db:/var/lib/milvus/db"
+      - "./milvus_apollo/milvus/conf:/var/lib/milvus/conf"
+      - "./milvus_apollo/milvus/logs:/var/lib/milvus/logs"
+      - "./milvus_apollo/milvus/wal:/var/lib/milvus/wal"
+    networks:
+      - command-server
+  rabbitmq:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/rabbitmq:3.8.2-rc.1-management
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - command-server
+  postgres:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/postgres:12.2
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD
+    networks:
+      - command-server
+  cantaloupe:
+    image: 604877064041.dkr.ecr.us-east-1.amazonaws.com/mitlibraries/cantaloupe
+    networks:
+      - command-server
+    environment:
+      - ENDPOINT_ADMIN_ENABLED=true
+      - ENDPOINT_ADMIN_USERNAME
+      - ENDPOINT_ADMIN_SECRET
+      - S3SOURCE_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - S3SOURCE_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3SOURCE_BASICLOOKUPSTRATEGY_BUCKET_NAME=apollo-source-data
+      - "S3SOURCE_BASICLOOKUPSTRATEGY_PATH_PREFIX="
+      - "S3SOURCE_BASICLOOKUPSTRATEGY_PATH_SUFFIX="
+      - SOURCE_STATIC=S3Source
+      - S3SOURCE_ENDPOINT=https://s3.us-east-1.amazonaws.com
+      - PROCESSOR_FALLBACK=ImageMagickProcessor
+    expose:
+      - 8182
+    ports:
+      - 8182:8182
+  file-type:
+    depends_on:
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: ./file_type/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb'
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - DEVELOPMENT
+    networks:
+      - command-server
+    volumes:
+      - "./file_type:/code"
+  file-hash:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./hash/Dockerfile
+    shm_size: '7gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - BUCKET_NAME
+      - DEVELOPMENT
+    volumes:
+      - "./hash:/code"
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+    networks:
+      - command-server
+  facenet-search:
+    depends_on:
+      - postgres
+      - milvus
+      - localstack
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: face/facenet_search/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb' # <-- when RUNNING
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo" # this is needed for hot reload of utils directory
+      - "./face/facenet_search:/code/face/facenet_search"  #this is needed for hot reload of source.
+    expose:
+      - 82
+    ports:
+      - 8082:82
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - MILVUS_HOST
+      - DEVELOPMENT
+      - NEO4J_AUTH
+      - NEO4J_HOST
+    networks:
+      - command-server
+  facenet-video-rabbit-consumer:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: face/facenet_video_rabbit_consumer/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./face/facenet_video_rabbit_consumer:/code/face/facenet_video_rabbit_consumer"
+    networks:
+      - command-server
+  landmark:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: landmark_recognition/Dockerfile
+      shm_size: '2gb' # <-- when BUILDING
+    shm_size: '2gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    networks:
+      - command-server
+    volumes:
+      - "./landmark_recognition/:/code"
+  landmark-search:
+    depends_on:
+      - postgres
+    build:
+      context: ./
+      dockerfile: landmark_recognition/search.Dockerfile
+      shm_size: '2gb' # <-- when BUILDING
+    shm_size: '2gb' # <-- when RUNNING
+    ports:
+      - 8083:83
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - POSTGRES_PASSWORD
+      - DEBUG
+      - DEVELOPMENT
+    volumes:
+      - "./landmark_recognition/:/code"
+    networks:
+      - command-server
+  named-entity-recognition:
+    depends_on:
+      - rabbitmq
+      - neo4j
+    build:
+      context: ./
+      dockerfile: ner/Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - NEO4J_AUTH
+      - NEO4J_HOST
+      - DEVELOPMENT
+    volumes:
+      - "./ner/:/code"  #this is needed for hot reload of source.
+      - "./utils/commandutils:/usr/local/lib/python3.6/site-packages/commandutils" # this is needed for hot reload of utils directory
+    networks:
+      - command-server
+  named-entity-recognition-search:
+    depends_on:
+      - neo4j
+    build:
+      context: ./
+      dockerfile: ner/search/Dockerfile
+    ports:
+      - 8084:84
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - NEO4J_AUTH
+      - NEO4J_HOST
+      - DEVELOPMENT
+    volumes:
+      - "./ner/:/code"
+      - "./utils/commandutils:/usr/local/lib/python3.6/site-packages/commandutils" # this is needed for hot reload of utils
+    networks:
+      - command-server
+  object-detection-rabbit-consumer:
+    depends_on:
+      - rabbitmq
+      - postgres
+      - localstack
+    build:
+      context: ./
+      dockerfile: ./obj_det/object_detection_rabbit_consumer/Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./obj_det/:/code/obj_det"  #this is needed for hot reload of source. 
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo" # this is needed for hot reload of utils directory
+    networks:
+      - command-server
+  object-detection-vid:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./obj_det_vid/Dockerfile
+      shm_size: '7gb' # <-- when BUILDING
+    shm_size: '7gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+    volumes:
+      - "./obj_det_vid/:/code"  #this is needed for hot reload of source.
+      - "./utils/commandutils:/usr/local/lib/python3.6/site-packages/commandutils" # this is needed for hot reload of utils directory
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo" # this is needed for hot reload of apollo directory
+    networks:
+      - command-server
+  ocr-tesseract:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./ocr/tesseract/compose.Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.7/site-packages/apollo"
+      - "./ocr/tesseract/:/code"
+    networks:
+      - command-server
+  ocr-keras:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./ocr/keras-ocr-v2/compose.Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./ocr/keras-ocr-v2:/code/"
+    networks:
+      - command-server
+  ocr-easy:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./ocr/easy-ocr/compose.Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/opt/conda/lib/python3.7/site-packages/apollo"
+      - "./ocr/easy-ocr/:/code"
+    networks:
+      - command-server
+  scene-places365:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./scene_classification/Keras-VGG16-places365/compose.Dockerfile
+    shm_size: '128mb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./scene_classification/Keras-VGG16-places365:/code/"
+    networks:
+      - command-server
+  sentiment-textblob:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./sentiment-analysis/textblob/compose.Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.7/site-packages/apollo"
+      - "./sentiment-analysis/textblob/:/code"
+    networks:
+      - command-server
+  full-text-search:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./full_text_search/compose.Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.7/site-packages/apollo"
+      - "./full_text_search/:/code"
+    networks:
+      - command-server
+  speaker-recognition:
+    depends_on:
+      - rabbitmq
+      - postgres
+      - milvus
+    build:
+      context: ./
+      dockerfile: speaker_recognition/vgg_speaker_recognition/Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - POSTGRES_PASSWORD
+      - MILVUS_HOST
+      - DEVELOPMENT
+    networks:
+      - command-server
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/dist-packages/apollo"
+      - "./speaker_recognition/vgg_speaker_recognition/:/code/speaker_recognition/vgg_speaker_recognition"
+  speaker-search:
+    depends_on:
+      - postgres
+      - milvus
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: speaker_recognition/speaker_search/Dockerfile
+      shm_size: '5gb' # <-- when BUILDING
+    shm_size: '5gb' # <-- when RUNNING
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/dist-packages/apollo"
+      - "./speaker_recognition/speaker_search:/code/speaker_recognition/speaker_search"
+      - "./speaker_recognition/vgg_speaker_recognition:/code/speaker_recognition/vgg_speaker_recognition"
+    expose:
+      - 85
+    ports:
+      - 8085:85
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - MILVUS_HOST
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - DEVELOPMENT
+    networks:
+      - command-server
+  speech-to-text:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./speech_to_text/vosk/compose.Dockerfile
+    shm_size: '7gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - RABBITMQ_PASSWORD
+      - RABBITMQ_USER
+      - POSTGRES_PASSWORD
+      - DEVELOPMENT
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.7/site-packages/apollo"
+      - "./speech_to_text/vosk:/code/"
+    networks:
+      - command-server
+  virus-scanner:
+    depends_on:
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: ./virus_scanner/compose.Dockerfile
+      shm_size: '7gb' # <-- when BUILDING      
+    shm_size: '7gb' # <-- when RUNNING
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - RABBITMQ_HOST
+      - DEVELOPMENT
+    volumes: 
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./virus_scanner:/code/"
+    networks:
+      - command-server
+  apollo-tests:
+    depends_on:
+      - postgres
+      - rabbitmq
+      - neo4j
+      - milvus
+      - localstack
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=foobar
+      - MILVUS_HOST
+    build:
+      context: ./
+      dockerfile: ./apollo/Dockerfile
+    volumes:
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+      - "./apollo/tests:/code/tests"
+    networks:
+      - command-server
+  flask-apollo-processor:
+    depends_on:
+      - rabbitmq
+      - postgres
+      - milvus
+      - neo4j
+    build:
+      context: ./
+      dockerfile: ./flask-apollo-processor/Dockerfile
+    expose:
+      - 80
+    ports:
+      - 8080:80
+    volumes:
+      - "./flask-apollo-processor:/code"
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+    environment:
+      - RABBITMQ_HOST
+      - RABBITMQ_USER
+      - RABBITMQ_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - DEBUG
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY      
+      - BUCKET_NAME
+      - LANDMARK_SEARCH_HOST
+      - SPEAKER_SEARCH_HOST
+      - NEO4J_HOST
+      - NEO4J_AUTH
+      - NER_SEARCH_HOST
+      - DEVELOPMENT
+      - FACE_SEARCH_HOST
+      - MILVUS_HOST
+    networks:
+      - command-server
+  flask-enrollment-backend:
+    depends_on:
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./flask-enrollment-backend/Dockerfile
+    expose:
+      - 80
+    ports:
+      - 8080:80
+    volumes:
+      - "./flask-enrollment-backend:/code"
+      - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - DEBUG
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY      
+      - BUCKET_NAME
+      - DEVELOPMENT
+    networks:
+      - command-server
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_gray_apollo"
+    tools:context="com.atakmap.android.apolloedge.ocr.LanguageActivity">
+
+    <TextView
+        android:id="@+id/header_selectlanguage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:padding = "8dp"
+        android:background="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:text = "Set Language"/>
+
+    <Button
+        android:id="@+id/ara"
+        style="@style/apolloDarkButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_selectlanguage"
+        android:text="@string/set_language_arabic"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/eng"
+        style="@style/apolloDarkButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ara"
+        android:text="@string/set_language_english"
+        android:textSize="20sp" />
+
+    <Button
+        style="@style/apolloDarkButton"
+        android:id="@+id/fra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eng"
+        android:text="@string/set_language_french"
+        android:textSize="20sp" />
+
+    <Button
+        style="@style/apolloDarkButton"
+        android:id="@+id/rus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fra"
+        android:text="@string/set_language_russian"
+        android:textSize="20sp" />
+
+</RelativeLayout>

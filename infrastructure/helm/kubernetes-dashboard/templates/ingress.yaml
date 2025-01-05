@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled -}}
+{{- $serviceName := include "kubernetes-dashboard.fullname" . -}}
+{{- $servicePort := .Values.service.externalPort -}}
+{{- $paths := .Values.ingress.paths -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kubernetes-dashboard.fullname" . }}
+  labels:
+    app: {{ template "kubernetes-dashboard.name" . }}
+    chart: {{ template "kubernetes-dashboard.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- range $key, $value := .Values.ingress.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- if .Values.ingress.httpsCertificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.httpsCertificateArn }}
+    {{- end }}
+    {{- if .Values.ingress.externalDnsHostname }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.externalDnsHostname }}
+    {{- end }}
+{{- end }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+            {{- if .Values.ingress.tls }}
+              serviceName: ssl-redirect
+              servicePort: use-annotation
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+            {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+            {{- end }}
+{{- end -}}

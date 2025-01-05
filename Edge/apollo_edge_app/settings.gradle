@@ -1,0 +1,1 @@
+include ':app', ':models', ':aars', ':tesseract4android-2.0.0', ':tesseract4android-2.0.0-javadoc'

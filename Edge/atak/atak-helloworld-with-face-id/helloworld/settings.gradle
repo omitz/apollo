@@ -1,0 +1,2 @@
+include ':aars:apollo-faceId-library'
+include ':app'
