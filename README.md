@@ -1,2 +1,2 @@
 # apollo
-This is the Apollo AI project
+Repo for the APOLLO project
