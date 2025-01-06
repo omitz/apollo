@@ -210,11 +210,12 @@
                         File: {{mydata.path}}
                       </div>
                       <v-btn color="primary" type="Submit" @click="toggleNeoGraph(searchentity, index)">Details</v-btn>
+<!--                      
                       <div v-bind:class="{ neovis: true, open: mydata.open, closed: !mydata.open }" >
                         <div class="graph" :id="'neograph' + index"></div>
                         <analytic-results-view :path="mydata.path" />
                       </div>
-
+  -->
                     </v-card-text>
                     
                   </v-card>
@@ -278,8 +279,8 @@ import ImageView from "./ImageView";
 import VideoView from "./VideoView";
 import FullTextView from "./FullTextView";
 import SpeakerView from "./SpeakerView";
-import NeoVis from 'neovis.js/dist/neovis.js';
-import AnalyticResultsView from './AnalyticResultsView';
+//import NeoVis from 'neovis.js/dist/neovis.js';
+//import AnalyticResultsView from './AnalyticResultsView';
 import ResultView from './ResultView';
 import vSelect from 'vue-select';
 import "vue-select/dist/vue-select.css";
@@ -291,7 +292,7 @@ export default {
     "video-view": VideoView,
     "fulltext-view": FullTextView,
     "speaker-view": SpeakerView,
-    "analytic-results-view": AnalyticResultsView,
+  //  "analytic-results-view": AnalyticResultsView,
     "v-select": vSelect,
     "result-view": ResultView,
   },
@@ -432,8 +433,8 @@ export default {
       else {
         config.initial_cypher = "MATCH (n)-[r]->(m:DOCUMENT)<-[r2]-(n2) where n.name=\"" + searchtext + "\" return *"
       }
-      var viz = new NeoVis(config);
-      viz.render();
+      //var viz = new NeoVis(config);
+      //viz.render();
     },
 
     searchImage: function() {

@@ -14,7 +14,7 @@ from .relationaldatabase import RelationalDatabase
 from .s3filestore import S3FileStore
 from .postgresdatabase import PostgresDatabase
 from .fakeanalytic import FakeAnalytic
-from .neo4jgraphdatabase import Neo4jGraphDatabase
+#from .neo4jgraphdatabase import Neo4jGraphDatabase
 
 #search
 from .search.api import create_app

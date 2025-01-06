@@ -7,6 +7,7 @@ services:
     build:
       context: ./
       dockerfile: command-ui/Dockerfile
+    platform: "linux/amd64"      
     ports:
       - 3000:3000
     environment:
@@ -20,6 +21,7 @@ services:
     build:
       context: ./
       dockerfile: edge-enroll-ui/Dockerfile
+    platform: "linux/amd64"      
     ports:
       - 4000:4000
     environment:
@@ -56,6 +58,7 @@ services:
       dockerfile: face/facenet_rabbit_consumer/Dockerfile
       shm_size: '5gb' # <-- when BUILDING
     shm_size: '5gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -151,6 +154,7 @@ services:
       dockerfile: ./file_type/Dockerfile
       shm_size: '5gb' # <-- when BUILDING
     shm_size: '5gb'
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -168,6 +172,7 @@ services:
       context: ./
       dockerfile: ./hash/Dockerfile
     shm_size: '7gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -191,6 +196,7 @@ services:
       dockerfile: face/facenet_search/Dockerfile
       shm_size: '5gb' # <-- when BUILDING
     shm_size: '5gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     volumes:
       - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo" # this is needed for hot reload of utils directory
       - "./face/facenet_search:/code/face/facenet_search"  #this is needed for hot reload of source.
@@ -222,6 +228,7 @@ services:
       dockerfile: face/facenet_video_rabbit_consumer/Dockerfile
       shm_size: '5gb' # <-- when BUILDING
     shm_size: '5gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -246,6 +253,7 @@ services:
       dockerfile: landmark_recognition/Dockerfile
       shm_size: '2gb' # <-- when BUILDING
     shm_size: '2gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -264,6 +272,7 @@ services:
       dockerfile: landmark_recognition/search.Dockerfile
       shm_size: '2gb' # <-- when BUILDING
     shm_size: '2gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     ports:
       - 8083:83
     environment:
@@ -283,6 +292,7 @@ services:
     build:
       context: ./
       dockerfile: ner/Dockerfile
+    platform: "linux/amd64"       
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -301,6 +311,7 @@ services:
     build:
       context: ./
       dockerfile: ner/search/Dockerfile
+    platform: "linux/amd64"      
     ports:
       - 8084:84
     environment:
@@ -322,6 +333,7 @@ services:
     build:
       context: ./
       dockerfile: ./obj_det/object_detection_rabbit_consumer/Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -342,6 +354,7 @@ services:
       dockerfile: ./obj_det_vid/Dockerfile
       shm_size: '7gb' # <-- when BUILDING
     shm_size: '7gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -360,6 +373,7 @@ services:
     build:
       context: ./
       dockerfile: ./ocr/tesseract/compose.Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -378,6 +392,7 @@ services:
     build:
       context: ./
       dockerfile: ./ocr/keras-ocr-v2/compose.Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -415,6 +430,7 @@ services:
       context: ./
       dockerfile: ./scene_classification/Keras-VGG16-places365/compose.Dockerfile
     shm_size: '128mb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -433,6 +449,7 @@ services:
     build:
       context: ./
       dockerfile: ./sentiment-analysis/textblob/compose.Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -451,6 +468,7 @@ services:
     build:
       context: ./
       dockerfile: ./full_text_search/compose.Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -470,6 +488,7 @@ services:
     build:
       context: ./
       dockerfile: speaker_recognition/vgg_speaker_recognition/Dockerfile
+    platform: "linux/amd64"      
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -494,6 +513,7 @@ services:
       dockerfile: speaker_recognition/speaker_search/Dockerfile
       shm_size: '5gb' # <-- when BUILDING
     shm_size: '5gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     volumes:
       - "./apollo/apollo:/usr/local/lib/python3.6/dist-packages/apollo"
       - "./speaker_recognition/speaker_search:/code/speaker_recognition/speaker_search"
@@ -523,6 +543,7 @@ services:
       context: ./
       dockerfile: ./speech_to_text/vosk/compose.Dockerfile
     shm_size: '7gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -544,6 +565,7 @@ services:
       dockerfile: ./virus_scanner/compose.Dockerfile
       shm_size: '7gb' # <-- when BUILDING      
     shm_size: '7gb' # <-- when RUNNING
+    platform: "linux/amd64"    
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -569,6 +591,7 @@ services:
     build:
       context: ./
       dockerfile: ./apollo/Dockerfile
+    platform: "linux/amd64"      
     volumes:
       - "./apollo/apollo:/usr/local/lib/python3.6/site-packages/apollo"
       - "./apollo/tests:/code/tests"
@@ -583,6 +606,7 @@ services:
     build:
       context: ./
       dockerfile: ./flask-apollo-processor/Dockerfile
+    platform: "linux/amd64"      
     expose:
       - 80
     ports:
@@ -617,6 +641,7 @@ services:
     build:
       context: ./
       dockerfile: ./flask-enrollment-backend/Dockerfile
+    platform: "linux/amd64"      
     expose:
       - 80
     ports:

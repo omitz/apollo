@@ -9,7 +9,7 @@ reqs = [
       'pika==1.1.0', 
       'urllib3==1.24.3',
       'psycopg2-binary==2.8.5',
-      'py2neo==4.3.0', 
+      '#py2neo==4.3.0', 
       'numpy==1.18.2', 
       'werkzeug==1.0.1',
       'watchdog[watchmedo]'

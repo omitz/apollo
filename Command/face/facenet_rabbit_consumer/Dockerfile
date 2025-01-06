@@ -1,5 +1,5 @@
-FROM 604877064041.dkr.ecr.us-east-1.amazonaws.com/python:3.6.8
-
+#FROM 604877064041.dkr.ecr.us-east-1.amazonaws.com/python:3.6.8
+FROM python:3.6.9
 # avoid need for cli input
 ARG DEBIAN_FRONTEND=noninteractive
 

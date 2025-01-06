@@ -39,7 +39,7 @@ pika==1.1.0
 prompt-toolkit==2.0.10
 protobuf==3.14.0
 psycopg2-binary==2.8.6
-py2neo==2020.0.0
+#py2neo==2020.0.0
 pycparser==2.20
 Pygments==2.8.0
 pymilvus==0.2.14

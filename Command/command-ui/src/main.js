@@ -5,7 +5,7 @@ import router from './routes'
 import { store } from './store.js'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import VueCookies from 'vue-cookies'
-import './assets/css/neovis.css';
+//import './assets/css/neovis.css';
 
 Vue.use(VueCookies);
 //Vue.use(require('jwt_decode'))

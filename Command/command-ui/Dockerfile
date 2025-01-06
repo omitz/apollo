@@ -1,5 +1,5 @@
 FROM 604877064041.dkr.ecr.us-east-1.amazonaws.com/node:lts-alpine
-
+#FROM node
 # make the 'code' folder the current working directory
 WORKDIR /code
 
@@ -17,6 +17,8 @@ ENV PATH "$PATH:/code/node_modules/.bin"
 COPY ./command-ui/ /code/
 
 # build app for production with minification
+RUN npx browserslist@latest --update-db
+#RUN npm install --save neovis.js/dist/neovis.js
 RUN npm run build
 
 EXPOSE 3000

@@ -54,7 +54,7 @@ Pillow==5.1.0
 prompt-toolkit==2.0.10
 protobuf==3.11.2
 psycopg2-binary==2.8.6
-py2neo==2020.0.0
+#py2neo==2020.0.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycrypto==2.6.1

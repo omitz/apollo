@@ -114,9 +114,11 @@
                 File: {{path}}
               </div>
               <v-btn color="primary" type="Submit" @click="toggleNeoGraph(searchterm)">View Graph</v-btn>
+<!--              
               <div v-bind:class="{ neovis: true, open: ner_graph_open, closed: !ner_graph_open }" >
                 <div class="graph" :id="'neograph' + index"></div>
               </div>
+-->              
             </v-card-text>
           </v-card>
           <AnalyticResultsView :path="path" />
@@ -129,7 +131,7 @@
 <script>
 import MediaPlayer from "./MediaPlayer";
 import AnalyticResultsView from "./AnalyticResultsView";
-import NeoVis from 'neovis.js/dist/neovis.js'; 
+//import NeoVis from 'neovis.js/dist/neovis.js'; 
 
 export default {
   components: { AnalyticResultsView, MediaPlayer },
@@ -304,8 +306,9 @@ export default {
       else {
         config.initial_cypher = "MATCH (n)-[r]->(m:DOCUMENT)<-[r2]-(n2) where n.name=\"" + searchtext + "\" return *"
       }
-      var viz = new NeoVis(config);
-      viz.render();
+      //var viz = new NeoVis(config);
+      //viz.render();
+      
     },
 
     drawDetectionBoxes(bbs) {
