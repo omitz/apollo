@@ -25,10 +25,12 @@ def analytics = [
 ]
 
 void configureAWSCLI() {
+  sh 'AWS_REGION=us-east-1'
   sh 'aws configure set default.region ${AWS_REGION}'
   sh 'aws configure set default.output json'
 }
 void loginEKS() {
+  sh 'CLUSTER_NAME=dev-apollo-eks-cluster'
   sh 'aws eks update-kubeconfig --name ${CLUSTER_NAME}'
 }
 
