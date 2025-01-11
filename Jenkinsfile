@@ -25,7 +25,7 @@ def analytics = [
 ]
 
 void configureAWSCLI() {
-  sh 'AWS_REGION=us-east-1'
+  sh 'AWS_REGION="us-east-1"'
   sh 'aws configure set default.region ${AWS_REGION}'
   sh 'aws configure set default.output json'
 }
@@ -35,7 +35,7 @@ void loginEKS() {
 }
 
 void loginECR() {
-  sh 'AWS_REGION=us-east-1'
+  sh 'AWS_REGION="us-east-1"'
   sh 'echo "Logging in to AWS ECR..."'
   sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_REGION}.amazonaws.com'
 }
