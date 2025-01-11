@@ -26,7 +26,7 @@ def analytics = [
 
 void configureAWSCLI() {
   sh 'AWS_REGION="us-east-1"'
-  sh 'aws configure set default.region ${AWS_REGION}'
+  sh 'aws configure set default.region us-east-1'
   sh 'aws configure set default.output json'
 }
 void loginEKS() {
@@ -37,7 +37,7 @@ void loginEKS() {
 void loginECR() {
   sh 'AWS_REGION="us-east-1"'
   sh 'echo "Logging in to AWS ECR..."'
-  sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_REGION}.amazonaws.com'
+  sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com'
 }
 
 void deployEFSProvisioner() {
@@ -61,7 +61,7 @@ void deployRabbitMQ() {
 }
 
 void deployAwsAlbIngressController() {
-  sh 'helm upgrade --wait --install aws-alb-ingress-controller-release ./infrastructure/helm/aws-alb-ingress-controller --set awsVPCID=${AWS_VPC_ID},awsRegion=${AWS_REGION},clusterName=${CLUSTER_NAME}'
+  sh 'helm upgrade --wait --install aws-alb-ingress-controller-release ./infrastructure/helm/aws-alb-ingress-controller --set awsVPCID=${AWS_VPC_ID},awsRegion=us-east-1,clusterName=${CLUSTER_NAME}'
 }
 
 void deployK8sDashboard() {
@@ -84,7 +84,7 @@ void deployNeo4jSecret() {
 
 void deployEKSClusterAutoscaler() {
   sh 'echo -n ${CLUSTER_NAME} | xargs -I {} sed -i "s/{{clustername}}/{}/" ./infrastructure/helm/cluster-autoscaler-autodiscover.yaml'
-  sh 'echo -n ${AWS_REGION} | xargs -I {} sed -i "s/{{awsregion}}/{}/" ./infrastructure/helm/cluster-autoscaler-autodiscover.yaml'
+  sh 'echo -n us-east-1 | xargs -I {} sed -i "s/{{awsregion}}/{}/" ./infrastructure/helm/cluster-autoscaler-autodiscover.yaml'
   sh 'kubectl apply -f ./infrastructure/helm/cluster-autoscaler-autodiscover.yaml'
 }
 
@@ -92,7 +92,7 @@ void deployCantaloupeSecret() {
   sh 'echo -n ${CANTALOUPE_USERNAME} | base64 -w 0 | xargs -I {} sed -i "s/{{username}}/{}/" ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
   sh 'echo -n ${CANTALOUPE_PASSWORD} | base64 -w 0 | xargs -I {} sed -i "s/{{password}}/{}/" ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
   sh 'echo -n ${S3_BUCKET_NAME} | base64 -w 0 | xargs -I {} sed -i "s/{{bucket}}/{}/" ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
-  sh 'echo -n https://s3.${AWS_REGION}.amazonaws.com | base64 -w 0 | xargs -I {} sed -i "s/{{endpoint}}/{}/" ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
+  sh 'echo -n https://s3.us-east-1.amazonaws.com | base64 -w 0 | xargs -I {} sed -i "s/{{endpoint}}/{}/" ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
   sh 'kubectl apply -f ./infrastructure/helm/secrets/cantaloupe-connection-secret.yaml'
 }
 
@@ -192,7 +192,7 @@ for (x in analytics) {
       checkout scm 
 
       def AWS_ACCOUNT_ID = sh(script: 'aws sts get-caller-identity --query Account --output text', returnStdout: true).trim()
-      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_REGION}.amazonaws.com/', returnStdout: true).trim()
+      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/', returnStdout: true).trim()
       def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
       def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
 
@@ -229,7 +229,7 @@ for (x in analytics) {
       checkout scm
 
       def AWS_ACCOUNT_ID = sh(script: 'aws sts get-caller-identity --query Account --output text', returnStdout: true).trim()
-      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_REGION}.amazonaws.com/', returnStdout: true).trim()
+      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/', returnStdout: true).trim()
       def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
       def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
 
@@ -252,7 +252,7 @@ node('jenkins-agent-ubuntu-ec2') {
   checkout scm 
   
   def AWS_ACCOUNT_ID = sh(script: 'aws sts get-caller-identity --query Account --output text', returnStdout: true).trim()
-  def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_REGION}.amazonaws.com/', returnStdout: true).trim()
+  def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/', returnStdout: true).trim()
   def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
   def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
   
