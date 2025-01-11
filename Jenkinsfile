@@ -250,7 +250,7 @@ node('jenkins-agent-ubuntu-ec2') {
   if (GIT_BRANCH == 'master') {
     //master branch only, deploy connection secrets, deploy non-apollo services, and then apollo services to K8's cluster
     
-    stage{
+    stage('setup env'){
       environment {
         AWS_REGION = "us-east-1"
         CLUSTER_NAME = "dev-apollo-eks-cluster-2 Po"
