@@ -193,6 +193,12 @@ for (x in analytics) {
       def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
       def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
 
+      stage('setup env'){
+        environment {
+          AWS_REGION = "us-east-1"
+          CLUSTER_NAME = "dev-apollo-eks-cluster-2 Po"
+        }
+      }
       //build all docker containers
       stage('Build Docker') {
         buildDocker(analytic, REPO_URI, COMMIT_HASH)  
