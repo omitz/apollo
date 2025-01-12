@@ -215,7 +215,7 @@ for (x in analytics) {
       */
 
       //master branch only, push microservices to ECR
-      if (GIT_BRANCH == 'publishOnly') {
+      if (GIT_BRANCH == 'master') {
 
         stage("Publish Microservices") {
           configureAWSCLI()
