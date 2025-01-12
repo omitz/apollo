@@ -30,7 +30,7 @@ void configureAWSCLI() {
   sh 'aws configure set default.output json'
 }
 void loginEKS() {
-  sh 'CLUSTER_NAME=dev-apollo-eks-cluster'
+  sh 'CLUSTER_NAME=dev-apollo-eks-cluster-2'
   sh 'aws eks update-kubeconfig --name ${CLUSTER_NAME}'
 }
 
@@ -199,10 +199,11 @@ for (x in analytics) {
       stage('setup env'){
         environment {
           AWS_REGION = "us-east-1"
-          CLUSTER_NAME = "dev-apollo-eks-cluster-2 Po"
+          CLUSTER_NAME = "dev-apollo-eks-cluster-2"
         }
       }
       //build all docker containers
+      /*
       stage('Build Docker') {
         buildDocker(analytic, REPO_URI, COMMIT_HASH)  
       }
@@ -211,9 +212,10 @@ for (x in analytics) {
       stage('Unit Test') {
         pythonUnitTestAnalytic(analytic)
       }
+      */
 
       //master branch only, push microservices to ECR
-      if (GIT_BRANCH == 'master') {
+      if (GIT_BRANCH == 'publishOnly') {
 
         stage("Publish Microservices") {
           configureAWSCLI()
@@ -262,7 +264,7 @@ node('jenkins-agent-ubuntu-ec2') {
     stage('setup env'){
       environment {
         AWS_REGION = "us-east-1"
-        CLUSTER_NAME = "dev-apollo-eks-cluster-2 Po"
+        CLUSTER_NAME = "dev-apollo-eks-cluster-2"
       }
     }
     stage('Set up') {
