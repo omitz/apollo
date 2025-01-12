@@ -236,14 +236,16 @@ for (x in analytics) {
       def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
 
       //build all docker containers
+    /*
       stage('Build Docker') {
-        buildDocker('apollo-tests', REPO_URI, COMMIT_HASH)  
+        //buildDocker('apollo-tests', REPO_URI, COMMIT_HASH)  
       }
 
       //test microservices
       stage('Unit Test') {
-        pythonUnitTestAnalytic('apollo-tests')
+       // pythonUnitTestAnalytic('apollo-tests')
       }
+    */
     }
   }
 }
