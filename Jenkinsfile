@@ -183,7 +183,77 @@ void deployCommandUI()
   sh 'docker-compose -f Command/docker-compose.yaml run ui npm run deploy'
 }
 
+//parallel service builds
+def builders = [:]
+for (x in analytics) {
+  def analytic = x
+  builders[analytic] = {
+    node('jenkins-agent-ubuntu-ec2') {
+      checkout scm 
+
+      def AWS_ACCOUNT_ID = sh(script: 'aws sts get-caller-identity --query Account --output text', returnStdout: true).trim()
+      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/', returnStdout: true).trim()
+      def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
+      def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+
+      stage('setup env'){
+        echo "Stage: setup env"
+        environment {
+          AWS_REGION = "us-east-1"
+          CLUSTER_NAME = "dev-apollo-eks-cluster-2"
+        }
+      }
+      //build all docker containers
+      /*
+      stage('Build Docker') {
+        buildDocker(analytic, REPO_URI, COMMIT_HASH)  
+      }
+
+      //test microservices
+      stage('Unit Test') {
+        pythonUnitTestAnalytic(analytic)
+      }
+      */
+
+      //master branch only, push microservices to ECR
+      if (GIT_BRANCH == 'master') {
+
+        stage("Publish Microservices") {
+          configureAWSCLI()
+          loginECR()
+          publish(analytic, REPO_URI, COMMIT_HASH)
+        }
+      }
+
+    }
+  }
+
+  builders['apollo-tests'] = {
+    node('jenkins-agent-ubuntu-ec2') {
+      checkout scm
+
+      def AWS_ACCOUNT_ID = sh(script: 'aws sts get-caller-identity --query Account --output text', returnStdout: true).trim()
+      def REPO_URI = sh(script: 'echo $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/', returnStdout: true).trim()
+      def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
+      def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+
+      //build all docker containers
+    /*
+      stage('Build Docker') {
+        //buildDocker('apollo-tests', REPO_URI, COMMIT_HASH)  
+      }
+
+      //test microservices
+      stage('Unit Test') {
+       // pythonUnitTestAnalytic('apollo-tests')
+      }
+    */
+    }
+  }
+}
+
 //parallel builders
+
 node('jenkins-agent-ubuntu-ec2') {
   checkout scm 
   
@@ -192,6 +262,7 @@ node('jenkins-agent-ubuntu-ec2') {
   def COMMIT_HASH = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true).trim()
   def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
   
+  echo "WOLE WOLE WOLE $GIT_BRANCH - it works"
   if (GIT_BRANCH == 'publishOnly') {
     //master branch only, deploy connection secrets, deploy non-apollo services, and then apollo services to K8's cluster
     
