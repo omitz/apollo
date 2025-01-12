@@ -31,7 +31,7 @@ void configureAWSCLI() {
 }
 void loginEKS() {
   sh 'CLUSTER_NAME=dev-apollo-eks-cluster-2'
-  sh 'aws eks update-kubeconfig --name ${CLUSTER_NAME}'
+  sh 'aws eks update-kubeconfig --name dev-apollo-eks-cluster-2'
 }
 
 void loginECR() {
