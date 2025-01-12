@@ -216,102 +216,6 @@ for (x in analytics) {
       */
 
       //master branch only, push microservices to ECR
-      //Wole rearranged to deploy into EKS 
-      if (GIT_BRANCH == 'publishOnly') {
-        //master branch only, deploy connection secrets, deploy non-apollo services, and then apollo services to K8's cluster
-        
-        stage('setup env'){
-          echo "Stage: setup env - Wole"
-          environment {
-            AWS_REGION = "us-east-1"
-            CLUSTER_NAME = "dev-apollo-eks-cluster-2"
-          }
-        }
-        stage('Set up') {
-
-          echo "Stage: Set Up - Wole"
-          configureAWSCLI()
-          loginEKS()
-        }
-
-        //deploy connection secrets
-        withCredentials([
-          string(credentialsId: 'RABBITMQ_HOST', variable: 'RABBITMQ_HOST'), 
-          string(credentialsId: 'RABBITMQ_USER', variable: 'RABBITMQ_USER'), 
-          string(credentialsId: 'RABBITMQ_PASSWORD', variable: 'RABBITMQ_PASSWORD'),
-          string(credentialsId: 'POSTGRES_PASSWORD', variable: 'POSTGRES_PASSWORD'),
-          string(credentialsId: 'POSTGRES_HOST', variable: 'POSTGRES_HOST'),
-          string(credentialsId: 'CANTALOUPE_USERNAME', variable: 'CANTALOUPE_USERNAME'),
-          string(credentialsId: 'CANTALOUPE_PASSWORD', variable: 'CANTALOUPE_PASSWORD'),
-          string(credentialsId: 'NEO4J_PASSWORD', variable: 'NEO4J_PASSWORD')
-        ]) {
-          stage("Deploy Secrets"){
-            echo "Deploy Secrets - Wole"
-            deployRabbitmqSecret()
-            deployPostgresSecret()
-            deployNeo4jSecret()
-            deployMetricsServer()
-          }
-        }
-
-        //deploy non-apollo services
-        stage("Deploy First Services") {
-          echo "Deploy First Services - Wole"
-
-          deployEFSProvisioner()
-          deployExternalDNS()
-          deployK8sDashboard()
-          deployAwsAlbIngressController()
-          withCredentials([string(credentialsId: 'MYSQL_CONNECTION_STRING', variable: 'MYSQL_CONNECTION_STRING')]) {
-            deployMilvusChart()
-          }
-          withCredentials([string(credentialsId: 'NEO4J_PASSWORD', variable: 'NEO4J_PASSWORD')]) {
-            deployNeo4jChart()
-          }
-          withCredentials([
-            string(credentialsId: 'RABBITMQ_HOST', variable: 'RABBITMQ_HOST'), 
-            string(credentialsId: 'RABBITMQ_USER', variable: 'RABBITMQ_USER'), 
-            string(credentialsId: 'RABBITMQ_PASSWORD', variable: 'RABBITMQ_PASSWORD')
-          ]) {
-            deployRabbitMQ()
-            deployRabbitmqAutoscaler()
-          }
-
-          //Build & Deploy Command UI
-          withCredentials([
-            string(credentialsId: 'NEO4J_PASSWORD', variable: 'NEO4J_PASSWORD')
-          ]) {
-            buildDockerCommandUI()
-            deployCommandUI()
-          }
-          echo "Deploy more Services - Wole"
-          
-          deployEKSClusterAutoscaler()
-          deployCantaloupe()
-        }
-
-
-        withCredentials([
-          string(credentialsId: 'RABBITMQ_HOST', variable: 'RABBITMQ_HOST'), 
-          string(credentialsId: 'RABBITMQ_USER', variable: 'RABBITMQ_USER'), 
-          string(credentialsId: 'RABBITMQ_PASSWORD', variable: 'RABBITMQ_PASSWORD')
-        ]) {
-
-          stage("Deploy Microservices") {
-              
-            def deployJobs = [:]
-      
-            analytics.each { analytic ->
-              deployJobs[analytic] = {
-                deployAnalytic(analytic, COMMIT_HASH)  
-              }
-            }
-
-            parallel deployJobs
-          }
-        }
-      }
-      
       if (GIT_BRANCH == 'master') {
 
         stage("Publish Microservices") {
@@ -320,6 +224,7 @@ for (x in analytics) {
           publish(analytic, REPO_URI, COMMIT_HASH)
         }
       }
+
     }
   }
 
@@ -347,7 +252,7 @@ for (x in analytics) {
   }
 }
 
-parallel builders
+//parallel builders
 
 node('jenkins-agent-ubuntu-ec2') {
   checkout scm 
@@ -424,7 +329,7 @@ node('jenkins-agent-ubuntu-ec2') {
         buildDockerCommandUI()
         deployCommandUI()
       }
-      echo "Deploy more Services - Wole"
+      echo "Deploy First Services - Wole"
       
       deployEKSClusterAutoscaler()
       deployCantaloupe()
