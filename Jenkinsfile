@@ -263,7 +263,7 @@ node('jenkins-agent-ubuntu-ec2') {
   def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
   
   echo "WOLE WOLE WOLE $GIT_BRANCH - it works"
-  if (GIT_BRANCH == 'publishOnly') {
+  if (BRANCH_NAME == 'publishOnly') {
     //master branch only, deploy connection secrets, deploy non-apollo services, and then apollo services to K8's cluster
     
     stage('setup env'){
