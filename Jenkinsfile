@@ -197,6 +197,7 @@ for (x in analytics) {
       def GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
 
       stage('setup env'){
+        echo "Stage: setup env"
         environment {
           AWS_REGION = "us-east-1"
           CLUSTER_NAME = "dev-apollo-eks-cluster-2"
@@ -264,12 +265,15 @@ node('jenkins-agent-ubuntu-ec2') {
     //master branch only, deploy connection secrets, deploy non-apollo services, and then apollo services to K8's cluster
     
     stage('setup env'){
+      echo "Stage: setup env - Wole"
       environment {
         AWS_REGION = "us-east-1"
         CLUSTER_NAME = "dev-apollo-eks-cluster-2"
       }
     }
     stage('Set up') {
+
+      echo "Stage: Set Up - Wole"
       configureAWSCLI()
       loginEKS()
     }
@@ -286,6 +290,7 @@ node('jenkins-agent-ubuntu-ec2') {
       string(credentialsId: 'NEO4J_PASSWORD', variable: 'NEO4J_PASSWORD')
     ]) {
       stage("Deploy Secrets"){
+        echo "Deploy Secrets - Wole"
         deployRabbitmqSecret()
         deployPostgresSecret()
         deployNeo4jSecret()
@@ -295,7 +300,8 @@ node('jenkins-agent-ubuntu-ec2') {
 
     //deploy non-apollo services
     stage("Deploy First Services") {
-      
+      echo "Deploy First Services - Wole"
+
       deployEFSProvisioner()
       deployExternalDNS()
       deployK8sDashboard()
@@ -322,6 +328,7 @@ node('jenkins-agent-ubuntu-ec2') {
         buildDockerCommandUI()
         deployCommandUI()
       }
+      echo "Deploy more Services - Wole"
       
       deployEKSClusterAutoscaler()
       deployCantaloupe()
